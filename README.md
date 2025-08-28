@@ -24,14 +24,14 @@ A personal portfolio website built with **React** and **Tailwind CSS** to showca
 
 ## Project Structure
 
-- `src/components/Navbar.jsx` – Navigation bar with scroll effects
-- `src/components/Hero.jsx` – Hero section with introduction and CTA
-- `src/components/Skills.jsx` – Skills grid
-- `src/components/Projects.jsx` – Projects grid with filtering and modal details
-- `src/components/Contact.jsx` – Contact section with email link
-- `src/components/Footer.jsx` – Footer with copyright
-- `src/index.css` – Tailwind and typography plugin
-- `src/main.jsx` – Entry point with ReactDOM
+- `src/components/Navbar.jsx` - Navigation bar with scroll effects
+- `src/components/Hero.jsx` - Hero section with introduction and CTA
+- `src/components/Skills.jsx` - Skills grid
+- `src/components/Projects.jsx` - Projects grid with filtering and modal details
+- `src/components/Contact.jsx` - Contact section with email link
+- `src/components/Footer.jsx` - Footer with copyright
+- `src/index.css` - Tailwind and typography plugin
+- `src/main.jsx` - Entry point with ReactDOM
 
 ---
 
