@@ -1,4 +1,9 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 
 const skills = ['React', 'Node.js', 'Tailwind', 'TypeScript'];
 
@@ -12,9 +17,8 @@ const projects = [
     hostedUrl: 'https://yourportfolio.com',
     github: {
       repoTitle: 'Portfolio GitHub Repo',
-      repoUrl: 'https://github.com/yourusername/portfolio',
-      contributionChartUrl: 'https://ghchart.rshah.org/yourusername',
-      commitsApiUrl: 'https://api.github.com/repos/yourusername/portfolio/commits',
+      repoUrl: 'https://github.com/Micmada/Portfolio-Website',
+      commitsApiUrl: 'https://api.github.com/repos/Micmada/Portfolio-Website/commits',
     },
   },
   // add other projects here...
@@ -24,7 +28,11 @@ function ProjectDetail({ project, onClose }) {
   const [commits, setCommits] = useState([]);
   const [commitsError, setCommitsError] = useState(null);
 
+  const [readme, setReadme] = useState('');
+  const [readmeError, setReadmeError] = useState(null);
+
   useEffect(() => {
+    // Fetch commits
     if (project?.github?.commitsApiUrl) {
       fetch(project.github.commitsApiUrl)
         .then((res) => {
@@ -36,106 +44,147 @@ function ProjectDetail({ project, onClose }) {
         })
         .catch((err) => setCommitsError(err.message));
     }
+
+    // Fetch README
+    if (project?.github?.repoUrl) {
+      const match = project.github.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+      if (!match) return;
+      const owner = match[1];
+      const repo = match[2];
+
+      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`)
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch README');
+          return res.json();
+        })
+        .then((data) => {
+          const decoded = atob(data.content);
+          setReadme(decoded);
+        })
+        .catch((err) => setReadmeError(err.message));
+    }
   }, [project]);
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center z-50 p-6 overflow-auto"
-      onClick={onClose}
-    >
-      <div
-        className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 text-gray-100"
-        onClick={(e) => e.stopPropagation()}
-        style={{ backgroundColor: 'rgba(0, 0, 0, 1)', borderRadius: '0.5rem' }}
-      >
-        <button
+    <AnimatePresence>
+      {project && (
+        <motion.div
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-6 overflow-auto"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold"
-          aria-label="Close project details"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          &times;
-        </button>
-
-        <h1 className="text-4xl font-extrabold mb-4">{project.title}</h1>
-
-        <div className="flex flex-wrap gap-3 mb-6">
-          {project.skills.map((skill) => (
-            <span
-              key={skill}
-              className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-
-        <p className="mb-6 text-lg leading-relaxed">{project.details}</p>
-
-        {project.hostedUrl && (
-          <a
-            href={project.hostedUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max"
+          <motion.div
+            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 text-gray-100 bg-gray-900 rounded-lg shadow-lg"
+            style={{ maxHeight: '85vh' }}
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 50 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            View Live Site
-          </a>
-        )}
-
-        {project.github && (
-          <section className="p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
-            <h2 className="text-2xl font-bold mb-4">{project.github.repoTitle}</h2>
-
-            <a
-              href={project.github.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-600 underline mb-6 inline-block"
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold"
+              aria-label="Close project details"
             >
-              Visit GitHub Repository
-            </a>
+              &times;
+            </button>
 
-            {project.github.contributionChartUrl && (
-              <img
-                src={project.github.contributionChartUrl}
-                alt="GitHub contribution chart"
-                className="mb-6 rounded"
-              />
+            <h1 className="text-4xl font-extrabold mb-4">{project.title}</h1>
+
+            <div className="flex flex-wrap gap-3 mb-6">
+              {project.skills.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+
+            <p className="mb-6 text-lg leading-relaxed">{project.details}</p>
+
+            {project.hostedUrl && (
+              <a
+                href={project.hostedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max"
+              >
+                View Live Site
+              </a>
             )}
 
-            <div>
-              <h3 className="text-xl font-semibold mb-3">Recent Commits</h3>
+            {project.github && (
+              <section className="p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
+                <h2 className="text-2xl font-bold mb-4">{project.github.repoTitle}</h2>
 
-              {commitsError && (
-                <p className="text-red-500 mb-4">Error loading commits: {commitsError}</p>
-              )}
+                <a
+                  href={project.github.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-600 underline mb-6 inline-block"
+                >
+                  Visit GitHub Repository
+                </a>
 
-              {!commitsError && commits.length === 0 && (
-                <p className="text-gray-400 mb-4">Loading commits...</p>
-              )}
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Recent Commits</h3>
 
-              <ul className="list-disc list-inside space-y-2 max-h-48 overflow-auto">
-                {commits.map((commit) => (
-                  <li key={commit.sha}>
-                    <a
-                      href={commit.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      {commit.commit.message.split('\n')[0]} —{' '}
-                      <span className="italic text-gray-400">
-                        {new Date(commit.commit.author.date).toLocaleDateString()}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
-      </div>
-    </div>
+                  {commitsError && (
+                    <p className="text-red-500 mb-4">Error loading commits: {commitsError}</p>
+                  )}
+
+                  {!commitsError && commits.length === 0 && (
+                    <p className="text-gray-400 mb-4">Loading commits...</p>
+                  )}
+
+                  <ul className="list-disc list-inside space-y-2 max-h-48 overflow-auto">
+                    {commits.map((commit) => (
+                      <li key={commit.sha}>
+                        <a
+                          href={commit.html_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          {commit.commit.message.split('\n')[0]} —{' '}
+                          <span className="italic text-gray-400">
+                            {new Date(commit.commit.author.date).toLocaleDateString()}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+            
+              </section>
+            )}
+            {readme && (
+              <section className="mt-8 p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
+                <h2 className="text-2xl font-bold mb-4">README.md</h2>
+                <div
+                className="prose prose-invert max-w-none"
+                remarkplugins={[remarkGfm]}
+                >
+                  <ReactMarkdown>{readme}</ReactMarkdown>
+                </div>
+              </section>
+            )}
+            {readmeError && (
+              <p className="text-red-500 mt-4">Error loading README: {readmeError}</p>
+            )}
+            
+            {!readmeError && !readme && (
+              <p className="text-gray-400 mt-4">Loading README...</p>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -175,14 +224,17 @@ export default function Projects() {
 
       <div className="mb-6 flex flex-wrap gap-4">
         {skills.map((skill) => (
-          <button
-            key={skill}
-            className={`px-4 py-2 rounded ${
-              selectedSkills.includes(skill)
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-900'
-            }`}
-            onClick={() => toggleSkill(skill)}
+          <button 
+          key={skill}
+          className={`
+            px-4 py-2 rounded font-semibold transition
+            ${selectedSkills.includes(skill)
+              ? 'bg-blue-600 text-white shadow-lg'
+              : 'bg-gray-200 text-gray-900'}
+            hover:bg-blue-400 hover:text-white hover:scale-105
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+          `}
+          onClick={() => toggleSkill(skill)}
           >
             {skill}
           </button>
@@ -220,6 +272,8 @@ export default function Projects() {
           onClose={() => setSelectedProject(null)}
         />
       )}
+      
     </section>
+    
   );
 }
