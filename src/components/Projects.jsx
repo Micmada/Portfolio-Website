@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-// Your static skills list
-
 function ProjectDetail({ project, onClose }) {
   const [commits, setCommits] = useState([]);
   const [commitsError, setCommitsError] = useState(null);
@@ -15,7 +13,6 @@ function ProjectDetail({ project, onClose }) {
   useEffect(() => {
     if (!project) return;
 
-    // Fetch commits
     if (project.commitsApiUrl) {
       fetch(project.commitsApiUrl)
         .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
@@ -23,7 +20,6 @@ function ProjectDetail({ project, onClose }) {
         .catch(err => setCommitsError(err));
     }
 
-    // Fetch README
     if (project.repoUrl) {
       const match = project.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
       if (!match) return;
@@ -66,7 +62,7 @@ function ProjectDetail({ project, onClose }) {
             <h1 className="text-4xl font-extrabold mb-4">{project.title}</h1>
 
             <div className="flex flex-wrap gap-3 mb-6">
-              {project.skills.map((skill) => (
+              {[...project.languages, ...project.technologies].map((skill) => (
                 <span key={skill} className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold">
                   {skill}
                 </span>
@@ -75,10 +71,14 @@ function ProjectDetail({ project, onClose }) {
 
             <p className="mb-6 text-lg leading-relaxed">{project.details}</p>
 
-            {project.hostedUrl && (
-              <a href={project.hostedUrl} target="_blank" rel="noopener noreferrer"
-                 className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max">
-                View Live Site
+            {(project.hostedUrl || project.repoUrl) && (
+              <a
+                href={project.hostedUrl || project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max"
+              >
+                {project.hostedUrl ? 'View Live Site' : 'View on GitHub'}
               </a>
             )}
 
@@ -128,9 +128,11 @@ function ProjectDetail({ project, onClose }) {
 }
 
 export default function Projects() {
-  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [selectedTechnologies, setSelectedTechnologies] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [skills, setSkills] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
@@ -140,81 +142,96 @@ export default function Projects() {
       skipEmptyLines: true,
       complete: (results) => {
         const parsed = results.data
-          .filter((p) => p.id && p.title)
-          .map((p) => ({
+          .filter(p => p.id && p.title)
+          .map(p => ({
             ...p,
-            skills: p.skills ? p.skills.split(';').map((s) => s.trim()) : [],
+            languages: p.languages ? p.languages.split(';').map(s => s.trim()) : [],
+            technologies: p.technologies ? p.technologies.split(';').map(s => s.trim()) : [],
           }));
 
         setProjects(parsed);
 
-        // 🧩 Dynamically extract all unique skills
-        const allSkills = Array.from(
-          new Set(parsed.flatMap((p) => p.skills))
-        ).sort();
-        setSkills(allSkills);
+        setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
+        setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
       },
       error: (err) => console.error('CSV load error:', err),
     });
   }, []);
 
-  function toggleSkill(skill) {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    );
-  }
+  const toggleLanguage = (lang) => {
+    setSelectedLanguages(prev => prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]);
+  };
+
+  const toggleTechnology = (tech) => {
+    setSelectedTechnologies(prev => prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]);
+  };
 
   const filteredProjects = projects
-    .map((project) => {
-      const matchCount = project.skills.filter((s) => selectedSkills.includes(s)).length;
-      return { ...project, matchCount };
+    .map(project => {
+      const langMatchCount = project.languages.filter(l => selectedLanguages.includes(l)).length;
+      const techMatchCount = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
+      return { ...project, langMatchCount, techMatchCount, totalMatch: langMatchCount + techMatchCount };
     })
-    .filter((p) => selectedSkills.length === 0 || p.matchCount > 0)
-    .sort((a, b) => b.matchCount - a.matchCount);
+    .filter(p => (selectedLanguages.length === 0 || p.langMatchCount > 0) &&
+                 (selectedTechnologies.length === 0 || p.techMatchCount > 0))
+    .sort((a, b) => b.totalMatch - a.totalMatch);
 
-  function getMatchColor(matchCount) {
-    if (selectedSkills.length === 0) return 'bg-gray-200';
-    const ratio = matchCount / selectedSkills.length;
+  const getMatchColor = (totalMatch) => {
+    if (selectedLanguages.length + selectedTechnologies.length === 0) return 'bg-gray-200';
+    const ratio = totalMatch / (selectedLanguages.length + selectedTechnologies.length);
     if (ratio === 1) return 'bg-green-300';
     if (ratio >= 0.5) return 'bg-amber-300';
     return 'bg-red-300';
-  }
+  };
 
   return (
     <section id="projects" className="py-12 px-6 max-w-7xl mx-auto relative">
       <h2 className="text-3xl font-bold mb-6">Projects</h2>
 
+      <h3 className="text-xl font-bold mb-2">Languages</h3>
       <div className="mb-6 flex flex-wrap gap-4">
-        {skills.map((skill) => (
+        {languages.map(lang => (
           <button
-            key={skill}
+            key={lang}
+            onClick={() => toggleLanguage(lang)}
             className={`px-4 py-2 rounded font-semibold transition
-              ${selectedSkills.includes(skill)
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-200 text-gray-900'}
+              ${selectedLanguages.includes(lang) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-900'}
               hover:bg-blue-400 hover:text-white hover:scale-105
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1`}
-            onClick={() => toggleSkill(skill)}
           >
-            {skill}
+            {lang}
+          </button>
+        ))}
+      </div>
+
+      <h3 className="text-xl font-bold mb-2">Technologies</h3>
+      <div className="mb-6 flex flex-wrap gap-4">
+        {technologies.map(tech => (
+          <button
+            key={tech}
+            onClick={() => toggleTechnology(tech)}
+            className={`px-4 py-2 rounded font-semibold transition
+              ${selectedTechnologies.includes(tech) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-900'}
+              hover:bg-blue-400 hover:text-white hover:scale-105
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1`}
+          >
+            {tech}
           </button>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map((project) => (
+        {filteredProjects.map(project => (
           <div
             key={project.id}
-            className={`p-6 border rounded shadow hover:shadow-lg transition cursor-pointer text-gray-900 ${getMatchColor(project.matchCount)}`}
+            className={`p-6 border rounded shadow hover:shadow-lg transition cursor-pointer text-gray-900 ${getMatchColor(project.totalMatch)}`}
             onClick={() => setSelectedProject(project)}
           >
             <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
             <p className="mb-4">{project.description}</p>
             <div className="flex flex-wrap gap-2">
-              {project.skills.map((skill) => (
-                <span key={skill} className="text-xs bg-gray-300 rounded px-2 py-1">
-                  {skill}
-                </span>
+              {[...project.languages, ...project.technologies].map(skill => (
+                <span key={skill} className="text-xs bg-gray-300 rounded px-2 py-1">{skill}</span>
               ))}
             </div>
           </div>
@@ -222,10 +239,7 @@ export default function Projects() {
       </div>
 
       {selectedProject && (
-        <ProjectDetail
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
+        <ProjectDetail project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </section>
   );
