@@ -1,67 +1,38 @@
 import { useState, useEffect } from 'react';
+import Papa from 'papaparse';
 import { motion, AnimatePresence } from "framer-motion";
-
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-
-const skills = ['React', 'Node.js', 'Tailwind', 'TypeScript'];
-
-const projects = [
-  {
-    id: '1',
-    title: 'Portfolio Website',
-    skills: ['React', 'Tailwind'],
-    description: 'My personal portfolio site',
-    details: `This project is a React-based portfolio site styled with Tailwind CSS. It showcases my work, skills, and contact info. Features include responsive design, filterable projects, and smooth scrolling navigation.`,
-    hostedUrl: 'https://yourportfolio.com',
-    github: {
-      repoTitle: 'Portfolio GitHub Repo',
-      repoUrl: 'https://github.com/Micmada/Portfolio-Website',
-      commitsApiUrl: 'https://api.github.com/repos/Micmada/Portfolio-Website/commits',
-    },
-  },
-  // add other projects here...
-];
+// Your static skills list
 
 function ProjectDetail({ project, onClose }) {
   const [commits, setCommits] = useState([]);
   const [commitsError, setCommitsError] = useState(null);
-
   const [readme, setReadme] = useState('');
   const [readmeError, setReadmeError] = useState(null);
 
   useEffect(() => {
+    if (!project) return;
+
     // Fetch commits
-    if (project?.github?.commitsApiUrl) {
-      fetch(project.github.commitsApiUrl)
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch commits');
-          return res.json();
-        })
-        .then((data) => {
-          setCommits(data.slice(0, 5));
-        })
-        .catch((err) => setCommitsError(err.message));
+    if (project.commitsApiUrl) {
+      fetch(project.commitsApiUrl)
+        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
+        .then(data => setCommits(data.slice(0, 5)))
+        .catch(err => setCommitsError(err));
     }
 
     // Fetch README
-    if (project?.github?.repoUrl) {
-      const match = project.github.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+    if (project.repoUrl) {
+      const match = project.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
       if (!match) return;
-      const owner = match[1];
-      const repo = match[2];
+      const [_, owner, repo] = match;
 
       fetch(`https://api.github.com/repos/${owner}/${repo}/readme`)
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch README');
-          return res.json();
-        })
-        .then((data) => {
-          const decoded = atob(data.content);
-          setReadme(decoded);
-        })
-        .catch((err) => setReadmeError(err.message));
+        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch README'))
+        .then(data => setReadme(atob(data.content)))
+        .catch(err => setReadmeError(err.message));
     }
   }, [project]);
 
@@ -96,10 +67,7 @@ function ProjectDetail({ project, onClose }) {
 
             <div className="flex flex-wrap gap-3 mb-6">
               {project.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold"
-                >
+                <span key={skill} className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold">
                   {skill}
                 </span>
               ))}
@@ -108,49 +76,28 @@ function ProjectDetail({ project, onClose }) {
             <p className="mb-6 text-lg leading-relaxed">{project.details}</p>
 
             {project.hostedUrl && (
-              <a
-                href={project.hostedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max"
-              >
+              <a href={project.hostedUrl} target="_blank" rel="noopener noreferrer"
+                 className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max">
                 View Live Site
               </a>
             )}
 
-            {project.github && (
+            {project.repoUrl && (
               <section className="p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
-                <h2 className="text-2xl font-bold mb-4">{project.github.repoTitle}</h2>
-
-                <a
-                  href={project.github.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-600 underline mb-6 inline-block"
-                >
+                <h2 className="text-2xl font-bold mb-4">{project.repoTitle}</h2>
+                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer"
+                   className="text-blue-400 hover:text-blue-600 underline mb-6 inline-block">
                   Visit GitHub Repository
                 </a>
 
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Recent Commits</h3>
-
-                  {commitsError && (
-                    <p className="text-red-500 mb-4">Error loading commits: {commitsError}</p>
-                  )}
-
-                  {!commitsError && commits.length === 0 && (
-                    <p className="text-gray-400 mb-4">Loading commits...</p>
-                  )}
-
+                  {commitsError && <p className="text-red-500 mb-4">Error: {commitsError}</p>}
+                  {!commitsError && commits.length === 0 && <p className="text-gray-400 mb-4">Loading commits...</p>}
                   <ul className="list-disc list-inside space-y-2 max-h-48 overflow-auto">
                     {commits.map((commit) => (
                       <li key={commit.sha}>
-                        <a
-                          href={commit.html_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
+                        <a href={commit.html_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                           {commit.commit.message.split('\n')[0]} —{' '}
                           <span className="italic text-gray-400">
                             {new Date(commit.commit.author.date).toLocaleDateString()}
@@ -160,27 +107,19 @@ function ProjectDetail({ project, onClose }) {
                     ))}
                   </ul>
                 </div>
-            
               </section>
             )}
+
             {readme && (
               <section className="mt-8 p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
                 <h2 className="text-2xl font-bold mb-4">README.md</h2>
-                <div
-                className="prose prose-invert max-w-none"
-                remarkplugins={[remarkGfm]}
-                >
-                  <ReactMarkdown>{readme}</ReactMarkdown>
+                <div className="prose prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
               </section>
             )}
-            {readmeError && (
-              <p className="text-red-500 mt-4">Error loading README: {readmeError}</p>
-            )}
-            
-            {!readmeError && !readme && (
-              <p className="text-gray-400 mt-4">Loading README...</p>
-            )}
+
+            {readmeError && <p className="text-red-500 mt-4">Error loading README: {readmeError}</p>}
           </motion.div>
         </motion.div>
       )}
@@ -190,24 +129,47 @@ function ProjectDetail({ project, onClose }) {
 
 export default function Projects() {
   const [selectedSkills, setSelectedSkills] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [skills, setSkills] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
 
+  useEffect(() => {
+    Papa.parse('src/data/projects.csv', {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const parsed = results.data
+          .filter((p) => p.id && p.title)
+          .map((p) => ({
+            ...p,
+            skills: p.skills ? p.skills.split(';').map((s) => s.trim()) : [],
+          }));
+
+        setProjects(parsed);
+
+        // 🧩 Dynamically extract all unique skills
+        const allSkills = Array.from(
+          new Set(parsed.flatMap((p) => p.skills))
+        ).sort();
+        setSkills(allSkills);
+      },
+      error: (err) => console.error('CSV load error:', err),
+    });
+  }, []);
+
   function toggleSkill(skill) {
-    if (selectedSkills.includes(skill)) {
-      setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-    } else {
-      setSelectedSkills([...selectedSkills, skill]);
-    }
+    setSelectedSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    );
   }
 
   const filteredProjects = projects
     .map((project) => {
-      const matchedSkills = project.skills.filter((skill) =>
-        selectedSkills.includes(skill)
-      );
-      return { ...project, matchCount: matchedSkills.length };
+      const matchCount = project.skills.filter((s) => selectedSkills.includes(s)).length;
+      return { ...project, matchCount };
     })
-    .filter((project) => selectedSkills.length === 0 || project.matchCount > 0)
+    .filter((p) => selectedSkills.length === 0 || p.matchCount > 0)
     .sort((a, b) => b.matchCount - a.matchCount);
 
   function getMatchColor(matchCount) {
@@ -224,17 +186,15 @@ export default function Projects() {
 
       <div className="mb-6 flex flex-wrap gap-4">
         {skills.map((skill) => (
-          <button 
-          key={skill}
-          className={`
-            px-4 py-2 rounded font-semibold transition
-            ${selectedSkills.includes(skill)
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-gray-200 text-gray-900'}
-            hover:bg-blue-400 hover:text-white hover:scale-105
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
-          `}
-          onClick={() => toggleSkill(skill)}
+          <button
+            key={skill}
+            className={`px-4 py-2 rounded font-semibold transition
+              ${selectedSkills.includes(skill)
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-200 text-gray-900'}
+              hover:bg-blue-400 hover:text-white hover:scale-105
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1`}
+            onClick={() => toggleSkill(skill)}
           >
             {skill}
           </button>
@@ -242,22 +202,17 @@ export default function Projects() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map(({ id, title, description, skills, matchCount }) => (
+        {filteredProjects.map((project) => (
           <div
-            key={id}
-            className={`p-6 border rounded shadow hover:shadow-lg transition cursor-pointer text-gray-900 ${getMatchColor(
-              matchCount
-            )}`}
-            onClick={() => setSelectedProject(projects.find((p) => p.id === id))}
+            key={project.id}
+            className={`p-6 border rounded shadow hover:shadow-lg transition cursor-pointer text-gray-900 ${getMatchColor(project.matchCount)}`}
+            onClick={() => setSelectedProject(project)}
           >
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="mb-4">{description}</p>
+            <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+            <p className="mb-4">{project.description}</p>
             <div className="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="text-xs bg-gray-300 rounded px-2 py-1"
-                >
+              {project.skills.map((skill) => (
+                <span key={skill} className="text-xs bg-gray-300 rounded px-2 py-1">
                   {skill}
                 </span>
               ))}
@@ -272,8 +227,6 @@ export default function Projects() {
           onClose={() => setSelectedProject(null)}
         />
       )}
-      
     </section>
-    
   );
 }
