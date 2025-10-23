@@ -185,7 +185,7 @@ export default function Projects() {
   };
 
   return (
-    <section id="projects" className="py-12 px-6 max-w-7xl mx-auto relative">
+    <section id="projects" className="py-12 px-6 max-w-7xl mx-auto relative" style={{ scrollMarginTop: '80px' }}>
       <h2 className="text-3xl font-bold mb-6">Projects</h2>
 
       <h3 className="text-xl font-bold mb-2">Languages</h3>
