@@ -136,7 +136,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    Papa.parse('src/data/projects.csv', {
+    Papa.parse('/data/projects.csv', {
       download: true,
       header: true,
       skipEmptyLines: true,
