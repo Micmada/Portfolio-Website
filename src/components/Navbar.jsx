@@ -20,7 +20,7 @@ export default function Navbar() {
           Michael Eddleston
         </h1>
         <ul className="flex space-x-8 font-medium">
-          {['projects', 'contact'].map((section) => (
+          {['skills', 'experience', 'projects', 'contact'].map((section) => (
             <li key={section}>
               <a
                 href={`#${section}`}
