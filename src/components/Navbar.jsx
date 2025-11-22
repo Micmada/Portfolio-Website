@@ -12,11 +12,22 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-colors duration-500 ${
-      scrolled ? 'bg-gray-900 bg-opacity-90 shadow-lg' : 'bg-transparent'
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center text-white">
-        <h1 className="text-2xl font-extrabold tracking-tight select-none cursor-default">
+    <nav
+      className={`fixed top-0 w-full z-50 transition-colors duration-500 ${
+        scrolled
+          ? 'shadow-lg'
+          : ''
+      }`}
+      style={{
+        backgroundColor: scrolled ? 'rgba(30, 30, 46, 0.95)' : 'transparent', // #1E1E2E
+        color: '#D4D4D4',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1
+          className="text-2xl font-extrabold tracking-tight select-none cursor-default"
+          style={{ color: '#D4D4D4' }}
+        >
           Michael Eddleston
         </h1>
         <ul className="flex space-x-8 font-medium">
@@ -24,7 +35,10 @@ export default function Navbar() {
             <li key={section}>
               <a
                 href={`#${section}`}
-                className="hover:text-blue-400 transition-colors duration-300 capitalize"
+                className="transition-colors duration-300 capitalize"
+                style={{ color: '#D4D4D4' }}
+                onMouseEnter={(e) => (e.target.style.color = '#569CD6')}
+                onMouseLeave={(e) => (e.target.style.color = '#D4D4D4')}
               >
                 {section}
               </a>
@@ -35,4 +49,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

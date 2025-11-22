@@ -1,7 +1,10 @@
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-6 text-center">
-      © {new Date().getFullYear()} Michael Eddleston. All rights reserved.
+    <footer
+      className="py-6 text-center"
+      style={{ backgroundColor: '#1E1E2E', color: '#D4D4D4' }}
+    >
+      <span style={{ color: '#569CD6' }}>© {new Date().getFullYear()} Michael Eddleston.</span> All rights reserved.
     </footer>
   );
 }

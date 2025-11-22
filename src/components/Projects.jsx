@@ -43,8 +43,8 @@ function ProjectDetail({ project, onClose }) {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 text-gray-100 bg-gray-900 rounded-lg shadow-lg"
-            style={{ maxHeight: '85vh' }}
+            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 rounded-lg shadow-lg"
+            style={{ maxHeight: '85vh', backgroundColor: '#252536', color: '#D4D4D4' }}
             onClick={(e) => e.stopPropagation()}
             initial={{ scale: 0.9, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -59,11 +59,15 @@ function ProjectDetail({ project, onClose }) {
               &times;
             </button>
 
-            <h1 className="text-4xl font-extrabold mb-4">{project.title}</h1>
+            <h1 className="text-4xl font-extrabold mb-4" style={{ color: '#569CD6' }}>{project.title}</h1>
 
             <div className="flex flex-wrap gap-3 mb-6">
-              {[...project.languages, ...project.technologies].map((skill) => (
-                <span key={skill} className="bg-blue-700 text-blue-300 rounded-full px-4 py-1 text-sm font-semibold">
+              {[...project.languages, ...project.technologies].map(skill => (
+                <span
+                  key={skill}
+                  className="rounded-full px-4 py-1 text-sm font-semibold"
+                  style={{ backgroundColor: '#1E1E2E', color: '#CE9178' }}
+                >
                   {skill}
                 </span>
               ))}
@@ -76,28 +80,44 @@ function ProjectDetail({ project, onClose }) {
                 href={project.hostedUrl || project.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block mb-6 bg-green-600 text-white hover:bg-green-700 transition px-5 py-3 rounded font-semibold shadow w-max"
+                className="block mb-6 px-5 py-3 rounded font-semibold shadow w-max transition"
+                style={{ backgroundColor: '#569CD6', color: '#1E1E2E' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#478FCB'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#569CD6'}
               >
                 {project.hostedUrl ? 'View Live Site' : 'View on GitHub'}
               </a>
             )}
 
             {project.repoUrl && (
-              <section className="p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
-                <h2 className="text-2xl font-bold mb-4">{project.repoTitle}</h2>
-                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer"
-                   className="text-blue-400 hover:text-blue-600 underline mb-6 inline-block">
+              <section className="p-6 rounded-lg shadow mb-6" style={{ backgroundColor: '#1E1E2E' }}>
+                <h2 className="text-2xl font-bold mb-4" style={{ color: '#569CD6' }}>{project.repoTitle}</h2>
+                <a
+                  href={project.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: '#569CD6' }}
+                  onMouseEnter={(e) => e.target.style.color = '#478FCB'}
+                  onMouseLeave={(e) => e.target.style.color = '#569CD6'}
+                >
                   Visit GitHub Repository
                 </a>
 
-                <div>
-                  <h3 className="text-xl font-semibold mb-3">Recent Commits</h3>
+                <div className="mt-4">
+                  <h3 className="text-xl font-semibold mb-3" style={{ color: '#D4D4D4' }}>Recent Commits</h3>
                   {commitsError && <p className="text-red-500 mb-4">Error: {commitsError}</p>}
                   {!commitsError && commits.length === 0 && <p className="text-gray-400 mb-4">Loading commits...</p>}
                   <ul className="list-disc list-inside space-y-2 max-h-48 overflow-auto">
-                    {commits.map((commit) => (
+                    {commits.map(commit => (
                       <li key={commit.sha}>
-                        <a href={commit.html_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        <a
+                          href={commit.html_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                          style={{ color: '#D4D4D4' }}
+                        >
                           {commit.commit.message.split('\n')[0]} —{' '}
                           <span className="italic text-gray-400">
                             {new Date(commit.commit.author.date).toLocaleDateString()}
@@ -111,9 +131,9 @@ function ProjectDetail({ project, onClose }) {
             )}
 
             {readme && (
-              <section className="mt-8 p-6 rounded-lg shadow bg-gray-800 bg-opacity-70">
-                <h2 className="text-2xl font-bold mb-4">README.md</h2>
-                <div className="prose prose-invert max-w-none">
+              <section className="mt-8 p-6 rounded-lg shadow" style={{ backgroundColor: '#1E1E2E' }}>
+                <h2 className="text-2xl font-bold mb-4" style={{ color: '#569CD6' }}>README.md</h2>
+                <div className="prose prose-invert max-w-none" style={{ color: '#D4D4D4' }}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
               </section>
@@ -128,7 +148,7 @@ function ProjectDetail({ project, onClose }) {
 }
 
 export default function Projects() {
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [selectedTechnologies, setSelectedTechnologies] = useState([]);
   const [projects, setProjects] = useState([]);
   const [languages, setLanguages] = useState([]);
@@ -150,7 +170,6 @@ export default function Projects() {
           }));
 
         setProjects(parsed);
-
         setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
         setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
       },
@@ -158,62 +177,85 @@ export default function Projects() {
     });
   }, []);
 
-  const toggleLanguage = (lang) => {
-    setSelectedLanguages(prev => prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]);
+  const toggleLanguage = lang => {
+    setSelectedLanguage(selectedLanguage === lang ? null : lang);
+    setSelectedTechnologies([]); // reset technologies when changing language
   };
 
-  const toggleTechnology = (tech) => {
+  const toggleTechnology = tech => {
     setSelectedTechnologies(prev => prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]);
   };
 
-  const filteredProjects = projects
-    .map(project => {
-      const langMatchCount = project.languages.filter(l => selectedLanguages.includes(l)).length;
-      const techMatchCount = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
-      return { ...project, langMatchCount, techMatchCount, totalMatch: langMatchCount + techMatchCount };
-    })
-    .filter(p => (selectedLanguages.length === 0 || p.langMatchCount > 0) &&
-                 (selectedTechnologies.length === 0 || p.techMatchCount > 0))
-    .sort((a, b) => b.totalMatch - a.totalMatch);
+  // Filter projects strictly by selected language
+  const filteredProjects = selectedLanguage
+    ? projects.filter(p => p.languages.includes(selectedLanguage))
+    : projects;
 
-  const getMatchColor = (totalMatch) => {
-    if (selectedLanguages.length + selectedTechnologies.length === 0) return 'bg-gray-200';
-    const ratio = totalMatch / (selectedLanguages.length + selectedTechnologies.length);
-    if (ratio === 1) return 'bg-green-300';
-    if (ratio >= 0.5) return 'bg-amber-300';
-    return 'bg-red-300';
-  };
+  // Filter available technologies based on selected language
+  const filteredTechnologies = Array.from(new Set(filteredProjects.flatMap(p => p.technologies))).sort();
+
+  // Traffic light system for project background
+const getProjectColor = (project) => {
+  if (selectedTechnologies.length === 0) return { bg: '#252536', text: '#D4D4D4' }; // default gray
+  const matches = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
+  if (matches === 0) return { bg: '#EF4444', text: '#D4D4D4' }; // red only if no matches
+  const ratio = matches / selectedTechnologies.length;
+  if (ratio === 1) return { bg: '#22C55E', text: '#1E1E2E' }; // green
+  return { bg: '#FACC15', text: '#1E1E2E' }; // amber for partial matches
+};
+ 
+
+  // Sort projects: green first, then amber, then red
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
+    const aColor = getProjectColor(a).bg;
+    const bColor = getProjectColor(b).bg;
+    const colorRank = { '#22C55E': 3, '#FACC15': 2, '#EF4444': 1, '#252536': 0 };
+    return colorRank[bColor] - colorRank[aColor];
+  });
 
   return (
-    <section id="projects" className="py-12 px-6 max-w-7xl mx-auto relative" style={{ scrollMarginTop: '80px' }}>
-      <h2 className="text-3xl font-bold mb-6">Projects</h2>
+    <section
+  id="projects"
+  className="w-full py-12 relative"
+  style={{ backgroundColor: '#1E1E2E', color: '#D4D4D4', scrollMarginTop: '80px' }}
+>
+  <div className="max-w-7xl mx-auto px-6">
+      <h2 className="text-3xl font-bold mb-6" style={{ color: '#569CD6' }}>Projects</h2>
 
-      <h3 className="text-xl font-bold mb-2">Languages</h3>
+      <h3 className="text-xl font-bold mb-2" style={{ color: '#D4D4D4' }}>Languages</h3>
       <div className="mb-6 flex flex-wrap gap-4">
         {languages.map(lang => (
           <button
             key={lang}
             onClick={() => toggleLanguage(lang)}
             className={`px-4 py-2 rounded font-semibold transition
-              ${selectedLanguages.includes(lang) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-900'}
-              hover:bg-blue-400 hover:text-white hover:scale-105
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1`}
+              ${selectedLanguage === lang ? 'shadow-lg' : ''}
+              hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-1`}
+            style={{
+              backgroundColor: selectedLanguage === lang ? '#569CD6' : '#252536',
+              color: selectedLanguage === lang ? '#1E1E2E' : '#D4D4D4',
+              borderColor: '#3C3C4E'
+            }}
           >
             {lang}
           </button>
         ))}
       </div>
 
-      <h3 className="text-xl font-bold mb-2">Technologies</h3>
+      <h3 className="text-xl font-bold mb-2" style={{ color: '#D4D4D4' }}>Technologies</h3>
       <div className="mb-6 flex flex-wrap gap-4">
-        {technologies.map(tech => (
+        {filteredTechnologies.map(tech => (
           <button
             key={tech}
             onClick={() => toggleTechnology(tech)}
             className={`px-4 py-2 rounded font-semibold transition
-              ${selectedTechnologies.includes(tech) ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-900'}
-              hover:bg-blue-400 hover:text-white hover:scale-105
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1`}
+              ${selectedTechnologies.includes(tech) ? 'shadow-lg' : ''}
+              hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-1`}
+            style={{
+              backgroundColor: selectedTechnologies.includes(tech) ? '#569CD6' : '#252536',
+              color: selectedTechnologies.includes(tech) ? '#1E1E2E' : '#D4D4D4',
+              borderColor: '#3C3C4E'
+            }}
           >
             {tech}
           </button>
@@ -221,26 +263,39 @@ export default function Projects() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map(project => (
-          <div
-            key={project.id}
-            className={`p-6 border rounded shadow hover:shadow-lg transition cursor-pointer text-gray-900 ${getMatchColor(project.totalMatch)}`}
-            onClick={() => setSelectedProject(project)}
-          >
-            <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-            <p className="mb-4">{project.description}</p>
-            <div className="flex flex-wrap gap-2">
-              {[...project.languages, ...project.technologies].map(skill => (
-                <span key={skill} className="text-xs bg-gray-300 rounded px-2 py-1">{skill}</span>
-              ))}
+        {sortedProjects.map(project => {
+          const colors = getProjectColor(project);
+          return (
+            <div
+              key={project.id}
+              className="p-6 border rounded shadow hover:shadow-lg transition cursor-pointer"
+              onClick={() => setSelectedProject(project)}
+              style={{
+                backgroundColor: colors.bg,
+                color: colors.text,
+                borderColor: '#3C3C4E'
+              }}
+            >
+              <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+              <p className="mb-4">{project.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {[...project.technologies].map(skill => (
+                  <span
+                    key={skill}
+                    className="text-xs rounded px-2 py-1"
+                    style={{ backgroundColor: '#1E1E2E', color: '#CE9178' }}
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {selectedProject && (
-        <ProjectDetail project={selectedProject} onClose={() => setSelectedProject(null)} />
-      )}
+      {selectedProject && <ProjectDetail project={selectedProject} onClose={() => setSelectedProject(null)} />}
+         </div>
     </section>
   );
 }

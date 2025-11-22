@@ -16,24 +16,45 @@ export default function Experience() {
   ];
 
   return (
-    <section id="experience" className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto" style={{ scrollMarginTop: '80px' }}>
-      <h2 className="text-3xl sm:text-4xl font-bold mb-10 text-center">Experience</h2>
-      <div className="space-y-10">
-        {experiences.map((exp, idx) => (
-          <div key={idx} className="bg-gray-900 text-white rounded-xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
-              <h3 className="text-2xl sm:text-3xl font-semibold">{exp.title}</h3>
-              <p className="text-gray-400 italic mt-1 sm:mt-0">{exp.company} • {exp.location}</p>
+    <section
+      id="experience"
+      className="w-full py-12"
+      style={{ backgroundColor: '#1E1E2E', color: '#D4D4D4', scrollMarginTop: '80px' }}
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          className="text-3xl sm:text-4xl font-bold mb-10 text-center"
+          style={{ color: '#569CD6' }}
+        >
+          Experience
+        </h2>
+        <div className="space-y-10">
+          {experiences.map((exp, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition"
+              style={{ backgroundColor: '#252536', color: '#D4D4D4' }}
+            >
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+                <h3 className="text-2xl sm:text-3xl font-semibold" style={{ color: '#569CD6' }}>
+                  {exp.title}
+                </h3>
+                <p className="italic mt-1 sm:mt-0" style={{ color: '#A0A0B0' }}>
+                  {exp.company} • {exp.location}
+                </p>
+              </div>
+              <p className="italic mb-4" style={{ color: '#A0A0B0' }}>{exp.period}</p>
+              <p className="mb-4">{exp.description}</p>
+              <ul className="list-disc list-inside space-y-2">
+                {exp.bullets.map((bullet, i) => (
+                  <li key={i} className="pl-1" style={{ color: '#D4D4D4' }}>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="text-gray-400 italic mb-4">{exp.period}</p>
-            <p className="mb-4">{exp.description}</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-300">
-              {exp.bullets.map((bullet, i) => (
-                <li key={i} className="pl-1">{bullet}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
