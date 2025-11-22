@@ -1,7 +1,13 @@
 export default function Hero() {
   return (
-    <section className="h-screen flex flex-col justify-center items-center text-center px-4"
-      style={{ backgroundColor: '#1E1E2E', color: '#D4D4D4' }}
+    <section
+      className="min-h-screen flex flex-col justify-center items-center text-center px-4"
+      style={{
+        backgroundColor: '#1E1E2E',
+        color: '#D4D4D4',
+        paddingTop: '80px', // approximate navbar height
+        boxSizing: 'border-box',
+      }}
     >
       <h1 className="text-4xl sm:text-5xl font-bold mb-4" style={{ color: '#569CD6' }}>
         Hi, I’m Michael
@@ -26,7 +32,6 @@ export default function Hero() {
         View My Work
       </a>
 
-      {/* Bouncing down chevron */}
       <div className="mt-8 animate-bounce">
         <svg
           className="w-6 h-6"

@@ -1,19 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef(null);
 
+  // Scroll effect for shadow
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const sections = ['skills', 'experience', 'projects', 'contact'];
+  // Set CSS variable for navbar height
+  useEffect(() => {
+    if (navRef.current) {
+      document.documentElement.style.setProperty(
+        '--navbar-height',
+        `${navRef.current.offsetHeight}px`
+      );
+    }
+  }, [navRef.current, menuOpen]);
 
   return (
     <nav
+      ref={navRef}
       className={`fixed top-0 left-0 w-full z-50 transition-colors duration-500`}
       style={{
         paddingTop: 'env(safe-area-inset-top)',
@@ -22,13 +33,16 @@ export default function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-extrabold tracking-tight select-none cursor-default" style={{ color: '#D4D4D4' }}>
+        <h1
+          className="text-2xl font-extrabold tracking-tight select-none cursor-default"
+          style={{ color: '#D4D4D4' }}
+        >
           Michael Eddleston
         </h1>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-8 font-medium">
-          {sections.map((section) => (
+          {['skills', 'experience', 'projects', 'contact'].map((section) => (
             <li key={section}>
               <a
                 href={`#${section}`}
@@ -43,40 +57,41 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Hamburger Button */}
+        {/* Hamburger Menu */}
         <button
-          className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 focus:outline-none"
+          className="md:hidden flex flex-col justify-center items-center w-8 h-8 relative"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <span
-            className={`block h-0.5 w-8 bg-gray-200 transform transition duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
-          ></span>
+            className={`absolute w-8 h-0.5 bg-white transition-transform duration-300 ${menuOpen ? 'rotate-45 top-3.5' : 'top-2'}`}
+          />
           <span
-            className={`block h-0.5 w-8 bg-gray-200 transition duration-300 ${menuOpen ? 'opacity-0' : ''}`}
-          ></span>
+            className={`absolute w-8 h-0.5 bg-white transition-opacity duration-300 ${menuOpen ? 'opacity-0' : 'top-3.5'}`}
+          />
           <span
-            className={`block h-0.5 w-8 bg-gray-200 transform transition duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
-          ></span>
+            className={`absolute w-8 h-0.5 bg-white transition-transform duration-300 ${menuOpen ? '-rotate-45 top-3.5' : 'top-5'}`}
+          />
         </button>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#1E1E2E] px-6 py-4 shadow-lg flex flex-col space-y-4">
-          {sections.map((section) => (
-            <a
-              key={section}
-              href={`#${section}`}
-              className="capitalize font-medium transition-colors duration-300"
-              style={{ color: '#D4D4D4' }}
-              onClick={() => setMenuOpen(false)}
-              onMouseEnter={(e) => (e.target.style.color = '#569CD6')}
-              onMouseLeave={(e) => (e.target.style.color = '#D4D4D4')}
-            >
-              {section}
-            </a>
+        <ul className="md:hidden flex flex-col items-center bg-[#1E1E2E] w-full py-4 space-y-4">
+          {['skills', 'experience', 'projects', 'contact'].map((section) => (
+            <li key={section}>
+              <a
+                href={`#${section}`}
+                className="capitalize text-lg"
+                style={{ color: '#D4D4D4' }}
+                onClick={() => setMenuOpen(false)}
+                onMouseEnter={(e) => (e.target.style.color = '#569CD6')}
+                onMouseLeave={(e) => (e.target.style.color = '#D4D4D4')}
+              >
+                {section}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </nav>
   );
