@@ -14,13 +14,12 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-colors duration-500 ${
-        scrolled
-          ? 'shadow-lg'
-          : ''
+        scrolled ? 'shadow-lg' : ''
       }`}
       style={{
-        backgroundColor: scrolled ? 'rgba(30, 30, 46, 0.95)' : 'transparent', // #1E1E2E
+        backgroundColor: scrolled ? 'rgba(30, 30, 46, 0.95)' : 'transparent',
         color: '#D4D4D4',
+        paddingTop: 'env(safe-area-inset-top)', // add safe area padding for mobile notches
       }}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
