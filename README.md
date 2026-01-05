@@ -8,7 +8,6 @@ details: >
 technologies:
   - react
   - tailwind
-  - javascript
   - github-api
 hostedUrl: https://michaeleddleston.com
 ---
