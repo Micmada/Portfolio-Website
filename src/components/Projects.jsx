@@ -155,7 +155,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-  fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod-2/projects")
+  fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
     .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch projects'))
     .then(data => {
       const parsed = data.map(p => ({
