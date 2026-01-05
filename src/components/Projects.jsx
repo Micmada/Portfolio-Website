@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Papa from 'papaparse';
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -156,56 +155,47 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    Papa.parse('/data/projects.csv', {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const parsed = results.data
-          .filter(p => p.id && p.title)
-          .map(p => ({
-            ...p,
-            languages: p.languages ? p.languages.split(';').map(s => s.trim()) : [],
-            technologies: p.technologies ? p.technologies.split(';').map(s => s.trim()) : [],
-          }));
+  fetch("https://<api-id>.execute-api.us-east-1.amazonaws.com/prod/projects")
+    .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch projects'))
+    .then(data => {
+      const parsed = data.map(p => ({
+        ...p,
+        languages: Array.isArray(p.languages) ? p.languages : p.languages?.split(';') || [],
+        technologies: Array.isArray(p.technologies) ? p.technologies : p.technologies?.split(';') || [],
+      }));
 
-        setProjects(parsed);
-        setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
-        setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
-      },
-      error: (err) => console.error('CSV load error:', err),
-    });
-  }, []);
+      setProjects(parsed);
+      setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
+      setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
+    })
+    .catch(err => console.error('API fetch error:', err));
+}, []);
+
 
   const toggleLanguage = lang => {
     setSelectedLanguage(selectedLanguage === lang ? null : lang);
-    setSelectedTechnologies([]); // reset technologies when changing language
+    setSelectedTechnologies([]); 
   };
 
   const toggleTechnology = tech => {
     setSelectedTechnologies(prev => prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]);
   };
 
-  // Filter projects strictly by selected language
   const filteredProjects = selectedLanguage
     ? projects.filter(p => p.languages.includes(selectedLanguage))
     : projects;
 
-  // Filter available technologies based on selected language
   const filteredTechnologies = Array.from(new Set(filteredProjects.flatMap(p => p.technologies))).sort();
 
-  // Traffic light system for project background
 const getProjectColor = (project) => {
-  if (selectedTechnologies.length === 0) return { bg: '#252536', text: '#D4D4D4' }; // default gray
+  if (selectedTechnologies.length === 0) return { bg: '#252536', text: '#D4D4D4' }; 
   const matches = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
-  if (matches === 0) return { bg: '#EF4444', text: '#D4D4D4' }; // red only if no matches
+  if (matches === 0) return { bg: '#EF4444', text: '#D4D4D4' }; 
   const ratio = matches / selectedTechnologies.length;
-  if (ratio === 1) return { bg: '#22C55E', text: '#1E1E2E' }; // green
-  return { bg: '#FACC15', text: '#1E1E2E' }; // amber for partial matches
+  if (ratio === 1) return { bg: '#22C55E', text: '#1E1E2E' }; 
+  return { bg: '#FACC15', text: '#1E1E2E' };
 };
  
-
-  // Sort projects: green first, then amber, then red
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     const aColor = getProjectColor(a).bg;
     const bColor = getProjectColor(b).bg;
