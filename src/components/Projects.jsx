@@ -160,8 +160,8 @@ export default function Projects() {
     .then(data => {
       const parsed = data.map(p => ({
         ...p,
-        languages: Array.isArray(p.languages) ? p.languages : p.languages?.split(';') || [],
-        technologies: Array.isArray(p.technologies) ? p.technologies : p.technologies?.split(';') || [],
+        languages: Array.isArray(p.languages) ? p.languages : p.languages?.split(',') || [],
+        technologies: Array.isArray(p.technologies) ? p.technologies : p.technologies?.split(',') || [],
       }));
 
       setProjects(parsed);
