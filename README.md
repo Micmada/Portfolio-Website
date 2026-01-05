@@ -1,3 +1,18 @@
+---
+description: Personal portfolio website showcasing projects and skills
+details: >
+  A responsive React and Tailwind CSS portfolio site that displays projects,
+  skills, and contact information. Features live project filtering, GitHub
+  integration for repository data and commits, accessibility enhancements,
+  and smooth animations for a modern user experience.
+technologies:
+  - react
+  - tailwind
+  - javascript
+  - github-api
+hostedUrl: https://michaeleddleston.com
+---
+
 # Portfolio Website
 
 A personal portfolio website built with **React** and **Tailwind CSS** to showcase projects, skills, and contact information. Features a responsive design, project filtering, GitHub integration, and accessibility enhancements.
