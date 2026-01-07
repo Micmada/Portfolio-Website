@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="8" ry="8" fill="#1E1E2E"/>
-  <text x="12" y="42" font-size="32" font-family="monospace" fill="#D4D4D4">&gt;_</text>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="64" height="64" rx="12" fill="#1A1A1A"/>
+  
+  <!-- M -->
+  <path d="M14 20 L14 44 L16 44 L16 26 L22 38 L24 38 L30 26 L30 44 L32 44 L32 20 L29 20 L23 33 L17 20 Z" fill="#FAFAFA"/>
+  
+  <!-- E -->
+  <path d="M36 20 L36 44 L50 44 L50 42 L38 42 L38 33 L48 33 L48 31 L38 31 L38 22 L50 22 L50 20 Z" fill="#FAFAFA"/>
+  
+  <!-- Dot -->
+  <circle cx="54" cy="42" r="3" fill="#FF6B6B"/>
 </svg>
