@@ -26,7 +26,11 @@ function ProjectDetail({ project, onClose }) {
 
       fetch(`https://api.github.com/repos/${owner}/${repo}/readme`)
         .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch README'))
-        .then(data => setReadme(atob(data.content)))
+        .then(data => {
+          // Decode base64 with proper UTF-8 handling
+          const decodedContent = decodeURIComponent(escape(atob(data.content)));
+          setReadme(decodedContent);
+        })
         .catch(err => setReadmeError(err.message));
     }
   }, [project]);
@@ -43,8 +47,14 @@ function ProjectDetail({ project, onClose }) {
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(8px)' }}
         >
           <motion.div
-            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 sm:p-12 rounded-lg shadow-2xl"
-            style={{ maxHeight: '85vh', backgroundColor: '#FFFFFF', color: '#1A1A1A' }}
+            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-6 sm:p-8 md:p-12 rounded-lg shadow-2xl"
+            style={{ 
+              maxHeight: '85vh', 
+              backgroundColor: '#FFFFFF', 
+              color: '#1A1A1A',
+              overflowWrap: 'break-word',
+              wordBreak: 'break-word'
+            }}
             onClick={(e) => e.stopPropagation()}
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -174,12 +184,57 @@ function ProjectDetail({ project, onClose }) {
 
             {/* README */}
             {readme && (
-              <section className="mt-8 p-6 rounded-lg" style={{ backgroundColor: '#FAFAFA' }}>
+              <section 
+                className="mt-8 p-6 rounded-lg overflow-hidden" 
+                style={{ backgroundColor: '#FAFAFA' }}
+              >
                 <h2 className="text-xl font-bold mb-6" style={{ color: '#1A1A1A' }}>README.md</h2>
                 <div 
                   className="prose prose-lg max-w-none"
-                  style={{ color: '#444444' }}
+                  style={{ 
+                    color: '#444444',
+                    overflowWrap: 'break-word',
+                    wordBreak: 'break-word',
+                    maxWidth: '100%'
+                  }}
                 >
+                  <style jsx>{`
+                    .prose :global(table) {
+                      display: block;
+                      overflow-x: auto;
+                      max-width: 100%;
+                      width: 100%;
+                      border-collapse: collapse;
+                      -webkit-overflow-scrolling: touch;
+                    }
+                    .prose :global(table td),
+                    .prose :global(table th) {
+                      white-space: nowrap;
+                      padding: 8px 12px;
+                      border: 1px solid #E0E0E0;
+                    }
+                    .prose :global(pre) {
+                      overflow-x: auto;
+                      max-width: 100%;
+                      white-space: pre;
+                      -webkit-overflow-scrolling: touch;
+                    }
+                    .prose :global(code) {
+                      white-space: pre-wrap;
+                      word-wrap: break-word;
+                    }
+                    .prose :global(pre code) {
+                      white-space: pre;
+                    }
+                    .prose :global(img) {
+                      max-width: 100%;
+                      height: auto;
+                    }
+                    .prose :global(a) {
+                      overflow-wrap: break-word;
+                      word-break: break-word;
+                    }
+                  `}</style>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
               </section>
