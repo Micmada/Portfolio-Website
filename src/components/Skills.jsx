@@ -28,43 +28,83 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="w-full py-12"
-      style={{ backgroundColor: '#1E1E2E', color: '#D4D4D4', scrollMarginTop: '80px' }}
+      className="w-full py-20 sm:py-24"
+      style={{ 
+        backgroundColor: '#FFFFFF', 
+        color: '#1A1A1A', 
+        scrollMarginTop: '80px' 
+      }}
     >
-<div
-  className="h-1.5 rounded-full bg-[#569CD6] mx-auto mb-6"
-  style={{
-    width: 'clamp(100px, 90vw, 300px)', // min 60px, 15% of viewport width, max 200px
-  }}
-></div>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
+        {/* Section header */}
+        <div className="mb-16">
+          <div className="flex items-center gap-3 mb-4">
+            <div 
+              className="w-12 h-px"
+              style={{ backgroundColor: '#FF6B6B' }}
+            />
+            <span 
+              className="text-xs tracking-[0.3em] uppercase font-medium"
+              style={{ color: '#888888' }}
+            >
+              What I Work With
+            </span>
+          </div>
+          <h2
+            className="text-4xl sm:text-5xl font-bold"
+            style={{ color: '#1A1A1A' }}
+          >
+            Skills<span style={{ color: '#FF6B6B' }}>.</span>
+          </h2>
+        </div>
 
-      <div className="max-w-7xl mx-auto px-6">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ color: '#569CD6' }}
-        >
-          Skills
-        </h2>
-
+        {/* Skills grid */}
         <div className="grid gap-8 md:grid-cols-3">
-          {Object.entries(skills).map(([category, items]) => (
+          {Object.entries(skills).map(([category, items], index) => (
             <div
               key={category}
-              className="rounded-lg p-6 shadow text-center"
-              style={{ backgroundColor: '#252536', color: '#D4D4D4' }}
+              className="group"
+              style={{
+                opacity: 0,
+                animation: `fadeInUp 0.6s ease-out forwards`,
+                animationDelay: `${index * 100}ms`,
+              }}
             >
-              <h3
-                className="text-xl font-semibold mb-4"
-                style={{ color: '#569CD6' }}
-              >
-                {category}
-              </h3>
-              <div className="flex flex-wrap justify-center gap-2">
+              {/* Category header */}
+              <div className="mb-6">
+                <h3
+                  className="text-sm tracking-[0.2em] uppercase font-semibold mb-2"
+                  style={{ color: '#888888' }}
+                >
+                  {category}
+                </h3>
+                <div 
+                  className="w-12 h-px transition-all duration-300 group-hover:w-20"
+                  style={{ backgroundColor: '#FF6B6B' }}
+                />
+              </div>
+
+              {/* Skills list */}
+              <div className="flex flex-wrap gap-2">
                 {items.map((skill) => (
                   <span
                     key={skill}
-                    className="text-xs px-3 py-1 rounded font-medium"
-                    style={{ backgroundColor: '#CE9178', color: '#1E1E2E' }}
+                    className="text-sm px-4 py-2 rounded-full font-medium border transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                      borderColor: '#E0E0E0',
+                      color: '#666666'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.borderColor = '#FF6B6B';
+                      e.target.style.backgroundColor = '#FF6B6B';
+                      e.target.style.color = '#FFFFFF';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.borderColor = '#E0E0E0';
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#666666';
+                    }}
                   >
                     {skill}
                   </span>
@@ -74,7 +114,19 @@ export default function Skills() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </section>
   );
 }
- 
