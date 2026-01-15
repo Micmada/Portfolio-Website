@@ -255,6 +255,7 @@ export default function Projects() {
   const [languages, setLanguages] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [projectCommitDates, setProjectCommitDates] = useState({});
 
   useEffect(() => {
     fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
@@ -269,6 +270,23 @@ export default function Projects() {
         setProjects(parsed);
         setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
         setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
+
+        // Fetch latest commit date for each project
+        parsed.forEach(project => {
+          if (project.commitsApiUrl) {
+            fetch(project.commitsApiUrl)
+              .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
+              .then(commits => {
+                if (commits.length > 0) {
+                  setProjectCommitDates(prev => ({
+                    ...prev,
+                    [project.id]: new Date(commits[0].commit.author.date)
+                  }));
+                }
+              })
+              .catch(err => console.error(`Error fetching commits for ${project.title}:`, err));
+          }
+        });
       })
       .catch(err => console.error('API fetch error:', err));
   }, []);
@@ -298,10 +316,17 @@ export default function Projects() {
   };
  
   const sortedProjects = [...filteredProjects].sort((a, b) => {
-    const aColor = getProjectColor(a).bg;
-    const bColor = getProjectColor(b).bg;
-    const colorRank = { '#DCFCE7': 3, '#FEF3C7': 2, '#FEE2E2': 1, '#FFFFFF': 0 };
-    return colorRank[bColor] - colorRank[aColor];
+    if (selectedTechnologies.length > 0) {
+      const aColor = getProjectColor(a).bg;
+      const bColor = getProjectColor(b).bg;
+      const colorRank = { '#DCFCE7': 3, '#FEF3C7': 2, '#FEE2E2': 1, '#FFFFFF': 0 };
+      const colorDiff = colorRank[bColor] - colorRank[aColor];
+      if (colorDiff !== 0) return colorDiff;
+    }
+    
+    const aDate = projectCommitDates[a.id] || new Date(0);
+    const bDate = projectCommitDates[b.id] || new Date(0);
+    return bDate - aDate; 
   });
 
   return (
