@@ -5,12 +5,12 @@ export default function Experience() {
       company: "ARM",
       location: "Cambridge",
       period: "June 2023 – March 2025",
-      description: "Developed and automated tools for generating the ARM Architecture Reference Manual, contributing to cutting-edge software platforms that met industry standards for efficiency, performance, and test coverage.",
+      description: "Developed and automated tools for generating the ARM Architecture Reference Manual, contributing to cutting-edge software platforms that met industry standards for efficiency, performance, and test coverage. Participated in decision-making for projects of various sizes, focusing on modern technologies and software development best practices.",
       bullets: [
-        "Applied Object-Oriented Programming (OOP) in Python to improve automation processes, enhancing workflow efficiency and accuracy.",
-        "Updated, fixed, and enhanced in-house software platforms.",
-        "Worked in an Agile environment, using Gerrit for code reviews and Jenkins to establish a continuous integration pipeline, speeding up build and test processes.",
-        "Gained hands-on experience with large-scale software systems and automated documentation flows."
+        "Architected Python automation system to replace legacy documentation pipeline, reducing processing time from 1 week to under 24 hours for 20,000+ page technical specifications; delivered 2x efficiency improvement in production environment",
+        "Debugged and resolved critical production issues identified in senior engineers' code, maintaining system stability for enterprise-scale documentation generation workflows",
+        "Collaborated in Agile environment using Gerrit for code reviews and Jenkins for CI/CD, contributing to modernization of legacy systems processing machine-readable architecture specifications",
+        "Gained hands-on experience developing large-scale document automation systems handling complex technical specifications for industry-standard ARM architecture documentation"
       ]
     }
   ];
