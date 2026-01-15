@@ -29,7 +29,9 @@ function ProjectDetail({ project, onClose }) {
         .then(data => {
           // Decode base64 with proper UTF-8 handling
           const decodedContent = decodeURIComponent(escape(atob(data.content)));
-          setReadme(decodedContent);
+          const withoutYaml = decodedContent.replace(/^---\s*\n[\s\S]*?\n---\s*\n/m, '');
+
+          setReadme(withoutYaml);
         })
         .catch(err => setReadmeError(err.message));
     }
