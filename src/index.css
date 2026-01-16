@@ -3,10 +3,10 @@
 
 
 html {
-  background-color: #FAFAFA;
+  background-color: #151a1d;
 }
 
 body {
-  background-color: #FAFAFA;
-  overscroll-behavior-y: contain; /* Optional: prevents bounce on some browsers */
+  background-color: #151a1d;
+  overscroll-behavior-y: contain;
 }
