@@ -10,7 +10,7 @@ export default function Experience() {
       bullets: [
         "Architected Python automation system to replace legacy documentation pipeline, reducing processing time from 1 week to under 24 hours for 20,000+ page technical specifications; delivered 2x efficiency improvement in production environment",
         "Debugged and resolved critical production issues identified in senior engineers' code, maintaining system stability for enterprise-scale documentation generation workflows",
-        "Collaborated in Agile environment using Gerrit for code reviews and Jenkins for CI/CD, contributing to modernization of legacy systems processing machine-readable architecture specifications",
+        "Collaborated in Agile environment using Gerrit for code reviews and Jenkins for CI/CD, contributing to modernisation of legacy systems processing machine-readable architecture specifications",
         "Gained hands-on experience developing large-scale document automation systems handling complex technical specifications for industry-standard ARM architecture documentation"
       ],
       technologies: ['Python', 'Jenkins', 'Gerrit', 'Git', 'Linux', 'Automation']

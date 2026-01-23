@@ -4,7 +4,7 @@ export default function SchemaMarkup() {
     "@type": "Person",
     "name": "Michael Eddleston",
     "jobTitle": "Software Engineer",
-    "description": "Software Engineer specializing in React, TypeScript, and Python. Previously at ARM.",
+    "description": "Software Engineer specialising in React, TypeScript, and Python. Previously at ARM.",
     "url": "https://michaeleddleston.com",
     "sameAs": [
       "https://www.linkedin.com/in/michael-eddleston-4867a1214/",
