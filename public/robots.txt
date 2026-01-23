@@ -1,0 +1,12 @@
+# Allow all search engines to crawl everything
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://michaeleddleston.com/sitemap.xml
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
