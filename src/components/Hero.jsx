@@ -110,7 +110,7 @@ export default function Hero() {
           }}
         >
           Building scalable systems and elegant interfaces from blueprint to deployment. 
-          Specialized in Python automation, React ecosystems, and transforming complex 
+          Specialised in Python automation, React ecosystems, and transforming complex 
           technical requirements into production-ready solutions.
         </p>
 
