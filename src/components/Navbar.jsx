@@ -39,7 +39,8 @@ export default function Navbar({ projectOpen = false }) {
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(39, 69, 83, 0.2)' : '1px solid transparent',
         fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        opacity: projectOpen ? 0.5 : 1,
+        transform: projectOpen ? 'translateY(-100%)' : 'translateY(0)',
+        transition: 'transform 0.4s ease-in-out, background-color 0.5s ease, border-color 0.5s ease',
         pointerEvents: projectOpen ? 'none' : 'auto',
       }}
     >
