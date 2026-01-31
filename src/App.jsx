@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
@@ -10,18 +11,19 @@ import SchemaMarkup from "./components/SchemaMarkup";
 
 
 export default function App() {
+  const [projectOpen, setProjectOpen] = useState(false);
+
   return (
     <>
       <SEO />
       <SchemaMarkup />
-      <Navbar />
+      <Navbar projectOpen={projectOpen} />
       <Hero />
       <Skills />
       <Experience />
-      <Projects />
+      <Projects onProjectOpen={setProjectOpen} />
       <Contact />
       <Footer />
     </>
   );
 }
-

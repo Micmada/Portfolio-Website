@@ -331,7 +331,7 @@ function ProjectDetail({ project, onClose }) {
   );
 }
 
-export default function Projects() {
+export default function Projects({ onProjectOpen }) {
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [selectedTechnologies, setSelectedTechnologies] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -339,6 +339,13 @@ export default function Projects() {
   const [technologies, setTechnologies] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectCommitDates, setProjectCommitDates] = useState({});
+
+  // Notify parent when project opens/closes
+  useEffect(() => {
+    if (onProjectOpen) {
+      onProjectOpen(selectedProject !== null);
+    }
+  }, [selectedProject, onProjectOpen]);
 
   useEffect(() => {
     fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
