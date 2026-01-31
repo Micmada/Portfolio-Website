@@ -392,6 +392,9 @@ export default function Projects({ onProjectOpen }) {
   }, [selectedProject, onProjectOpen]);
 
   useEffect(() => {
+    const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || '';
+    const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
+
     fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
       .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch projects'))
       .then(data => {
@@ -408,7 +411,7 @@ export default function Projects({ onProjectOpen }) {
         // Fetch latest commit date for each project
         parsed.forEach(project => {
           if (project.commitsApiUrl) {
-            fetch(project.commitsApiUrl)
+            fetch(project.commitsApiUrl, { headers })
               .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
               .then(commits => {
                 if (commits.length > 0) {
