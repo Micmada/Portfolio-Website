@@ -14,7 +14,7 @@ function ProjectDetail({ project, onClose }) {
 
     // GitHub Personal Access Token (read-only, public repos only)
     // Generate at: https://github.com/settings/tokens
-    const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || '';
+    const GITHUB_TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
     const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
 
     if (project.commitsApiUrl) {
@@ -392,7 +392,7 @@ export default function Projects({ onProjectOpen }) {
   }, [selectedProject, onProjectOpen]);
 
   useEffect(() => {
-    const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || '';
+    const GITHUB_TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
     const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
 
     fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
