@@ -468,9 +468,9 @@ export default function Projects({ onProjectOpen }) {
       return { 
         bg: '#1f2528',
         text: '#ffffff',
-        border: 'rgba(39, 69, 83, 0.5)',
-        accentBg: 'rgba(39, 69, 83, 0.2)',
-        accentText: '#274553'
+        border: 'rgba(16, 185, 129, 0.5)',
+        accentBg: 'rgba(16, 185, 129, 0.2)',
+        accentText: '#10b981'
       }; 
     }
     return { 
