@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-export default function Navbar() {
+export default function Navbar({ projectOpen = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef(null);
@@ -22,16 +22,25 @@ export default function Navbar() {
     }
   }, [navRef.current, menuOpen]);
 
+  // Close mobile menu when project opens
+  useEffect(() => {
+    if (projectOpen && menuOpen) {
+      setMenuOpen(false);
+    }
+  }, [projectOpen, menuOpen]);
+
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500`}
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500`}
       style={{
         paddingTop: 'env(safe-area-inset-top)',
         backgroundColor: scrolled ? 'rgba(21, 26, 29, 0.8)' : 'transparent',
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(39, 69, 83, 0.2)' : '1px solid transparent',
         fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        opacity: projectOpen ? 0.5 : 1,
+        pointerEvents: projectOpen ? 'none' : 'auto',
       }}
     >
       <div className="max-w-[1200px] mx-auto px-6 py-5 flex justify-between items-center">
