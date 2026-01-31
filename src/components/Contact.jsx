@@ -8,6 +8,8 @@ export default function Contact() {
         color: '#ffffff', 
         scrollMarginTop: '80px',
         fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        position: 'relative',
+        zIndex: '1',
       }}
     >
       {/* Blueprint grid pattern */}

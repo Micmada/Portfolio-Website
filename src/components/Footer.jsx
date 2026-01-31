@@ -6,6 +6,8 @@ export default function Footer() {
         backgroundColor: '#151a1d',
         borderColor: 'rgba(39, 69, 83, 0.2)',
         fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        position: 'relative',
+        zIndex: '1',
       }}
     >
       {/* Subtle blueprint grid pattern */}
