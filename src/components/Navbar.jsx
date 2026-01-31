@@ -32,7 +32,7 @@ export default function Navbar({ projectOpen = false }) {
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500`}
+      className={`fixed top-0 left-0 w-full z-30 transition-all duration-500`}
       style={{
         paddingTop: 'env(safe-area-inset-top)',
         backgroundColor: scrolled ? 'rgba(21, 26, 29, 0.8)' : 'transparent',
