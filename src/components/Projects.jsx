@@ -12,11 +12,22 @@ function ProjectDetail({ project, onClose }) {
   useEffect(() => {
     if (!project) return;
 
+    // GitHub Personal Access Token (read-only, public repos only)
+    // Generate at: https://github.com/settings/tokens
+    const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || '';
+    const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
+
     if (project.commitsApiUrl) {
-      fetch(project.commitsApiUrl)
-        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
+      fetch(project.commitsApiUrl, { headers })
+        .then(res => {
+          if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+          return res.json();
+        })
         .then(data => setCommits(data.slice(0, 5)))
-        .catch(err => setCommitsError(err));
+        .catch(err => {
+          console.error('Commits fetch error:', err);
+          setCommitsError(err.message);
+        });
     }
 
     if (project.repoUrl) {
@@ -24,14 +35,20 @@ function ProjectDetail({ project, onClose }) {
       if (!match) return;
       const [_, owner, repo] = match;
 
-      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`)
-        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch README'))
+      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers })
+        .then(res => {
+          if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+          return res.json();
+        })
         .then(data => {
           const decodedContent = decodeURIComponent(escape(atob(data.content)));
           const withoutYaml = decodedContent.replace(/^---\s*\n[\s\S]*?\n---\s*\n/m, '');
           setReadme(withoutYaml);
         })
-        .catch(err => setReadmeError(err.message));
+        .catch(err => {
+          console.error('README fetch error:', err);
+          setReadmeError(err.message);
+        });
     }
   }, [project]);
 
@@ -203,46 +220,54 @@ function ProjectDetail({ project, onClose }) {
                   >
                     Recent Commits
                   </h3>
-                  {commitsError && <p style={{ color: '#ef4444' }}>Error: {commitsError}</p>}
-                  {!commitsError && commits.length === 0 && <p style={{ color: '#64748b' }}>Loading commits...</p>}
-                  <ul className="space-y-3 max-h-64 overflow-auto">
-                    {commits.map(commit => (
-                      <li key={commit.sha} className="flex gap-3 items-start">
-                        <span 
-                          className="mt-2 flex-shrink-0"
-                          style={{ 
-                            color: '#274553',
-                            fontSize: '12px',
-                            fontWeight: '900',
-                          }}
-                        >
-                          →
-                        </span>
-                        <div>
-                          <a
-                            href={commit.html_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline text-sm transition-colors duration-300"
-                            style={{ color: '#cbd5e1' }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#274553'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
+                  {commitsError && (
+                    <p style={{ color: '#fbbf24', fontSize: '13px' }}>
+                      ⚠ Commits unavailable - View the repository to see commit history
+                    </p>
+                  )}
+                  {!commitsError && commits.length === 0 && (
+                    <p style={{ color: '#64748b' }}>Loading commits...</p>
+                  )}
+                  {commits.length > 0 && (
+                    <ul className="space-y-3 max-h-64 overflow-auto">
+                      {commits.map(commit => (
+                        <li key={commit.sha} className="flex gap-3 items-start">
+                          <span 
+                            className="mt-2 flex-shrink-0"
+                            style={{ 
+                              color: '#274553',
+                              fontSize: '12px',
+                              fontWeight: '900',
+                            }}
                           >
-                            {commit.commit.message.split('\n')[0]}
-                          </a>
-                          <span className="block text-xs mt-1" style={{ color: '#64748b' }}>
-                            {new Date(commit.commit.author.date).toLocaleDateString()}
+                            →
                           </span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                          <div>
+                            <a
+                              href={commit.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline text-sm transition-colors duration-300"
+                              style={{ color: '#cbd5e1' }}
+                              onMouseEnter={(e) => e.currentTarget.style.color = '#274553'}
+                              onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
+                            >
+                              {commit.commit.message.split('\n')[0]}
+                            </a>
+                            <span className="block text-xs mt-1" style={{ color: '#64748b' }}>
+                              {new Date(commit.commit.author.date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </section>
             )}
 
             {/* README */}
-            {readme && (
+            {readme ? (
               <section 
                 className="mt-8 p-6 overflow-hidden" 
                 style={{ 
@@ -321,9 +346,28 @@ function ProjectDetail({ project, onClose }) {
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
               </section>
-            )}
-
-            {readmeError && <p style={{ color: '#ef4444' }} className="mt-4">Error loading README: {readmeError}</p>}
+            ) : readmeError ? (
+              <section 
+                className="mt-8 p-6" 
+                style={{ 
+                  backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                  border: '1px solid rgba(251, 191, 36, 0.3)',
+                }}
+              >
+                <span 
+                  className="block font-bold uppercase tracking-[0.3em] mb-3"
+                  style={{
+                    fontSize: '10px',
+                    color: '#fbbf24',
+                  }}
+                >
+                  README.md
+                </span>
+                <p style={{ color: '#fbbf24', fontSize: '13px' }}>
+                  ⚠ README unavailable - Visit the repository for full documentation
+                </p>
+              </section>
+            ) : null}
           </motion.div>
         </motion.div>
       )}
