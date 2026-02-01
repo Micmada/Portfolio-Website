@@ -15,7 +15,7 @@ technologies:
   - react
   - tailwind
   - github-api
-  - test
+  - aws
 hostedUrl: https://michaeleddleston.com
 ---
 # Portfolio Website
