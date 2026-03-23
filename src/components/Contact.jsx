@@ -277,7 +277,7 @@ export default function Contact() {
               
               <div className="space-y-3">
                 <a
-                  href="https://github.com/michaeleddleston"
+                  href="https://github.com/Micmada"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between group transition-all duration-300 p-2 -mx-2"
@@ -296,7 +296,7 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="https://linkedin.com/in/michaeleddleston"
+                  href="https://www.linkedin.com/in/michael-eddleston-4867a1214/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between group transition-all duration-300 p-2 -mx-2"
@@ -315,7 +315,7 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="/resume.pdf"
+                  href="/Michael_Eddleston_CV.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between group transition-all duration-300 p-2 -mx-2"
@@ -329,7 +329,7 @@ export default function Contact() {
                     e.currentTarget.style.color = '#cbd5e1';
                   }}
                 >
-                  <span className="text-sm font-medium">Resume/CV</span>
+                  <span className="text-sm font-medium">CV</span>
                   <span style={{ fontSize: '14px', fontWeight: '900' }}>→</span>
                 </a>
               </div>
