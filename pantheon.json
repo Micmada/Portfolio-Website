@@ -1,0 +1,35 @@
+{
+  "site": "michael-eddleston-portfolio",
+  "displayName": "Michael Eddleston — Portfolio",
+  "liveUrl": "https://michaeleddleston.com",
+  "repo": {
+    "owner": "Micmada",
+    "name": "portfolio",
+    "branch": "main"
+  },
+  "contentFile": "content/pantheon.content.json",
+  "tier": "agency",
+  "branding": {
+    "name": "Portfolio CMS",
+    "logo": "pantheon/assets/favicon.svg",
+    "favicon": "pantheon/assets/favicon.svg",
+    "colors": {
+      "primary": "#274553",
+      "primaryHover": "#2f5563",
+      "background": "#151a1d",
+      "surface": "#1f2528",
+      "text": "#ffffff",
+      "textMuted": "#94a3b8"
+    },
+    "font": "Epilogue"
+  },
+  "modules": {
+    "content_editor": true,
+    "seo_manager": false,
+    "media_library": false,
+    "analytics": false,
+    "data_manager": false,
+    "booking_manager": false,
+    "form_submissions": false
+  }
+}

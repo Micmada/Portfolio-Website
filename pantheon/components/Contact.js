@@ -64,4 +64,15 @@ export default {
     selector: '#contact .callout-left p',
     hint: 'Status line shown in the bottom callout bar, e.g. "Actively interviewing for software engineering roles"',
   },
+
+  'contact.status_badge': {
+    label: 'Status Badge Label',
+    type: 'text',
+    selector: '#contact .callout-left .text-sm.font-bold',
+    hint: 'Short status label next to the pulsing dot, e.g. "Seeking opportunities"',
+    ui: {
+      maxLength: 30,
+      placeholder: 'Seeking opportunities',
+    }
+  },
 };

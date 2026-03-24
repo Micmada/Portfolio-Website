@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { c } from '../content.js';
 
 export default function Navbar({ projectOpen = false }) {
   const [scrolled, setScrolled] = useState(false);
@@ -54,7 +55,7 @@ export default function Navbar({ projectOpen = false }) {
 
           {/* Optional full name - hidden on mobile */}
           <span className="hidden sm:block text-sm font-bold uppercase tracking-[0.15em] text-link--secondary transition-colors duration-300">
-            Eddleston
+            {c('navbar.brand_name')}
           </span>
         </a>
 

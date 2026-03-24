@@ -1,3 +1,5 @@
+import { c } from '../content.js';
+
 export default function Hero() {
   return (
     <section
@@ -15,7 +17,7 @@ export default function Hero() {
         {/* Status indicator with pulse */}
         <div className="status-badge mb-12">
           <span className="status-badge__dot" />
-          <span className="status-badge__text">Available for Opportunities</span>
+          <span className="status-badge__text">{c('hero.status')}</span>
         </div>
 
         {/* Section label - numbered system */}
@@ -26,25 +28,23 @@ export default function Hero() {
 
         {/* Main headline - dramatic scale and tracking */}
         <h1 className="section-title section-title--hero font-black uppercase mb-4">
-          Michael
+          {c('hero.name')}
           <br />
-          Eddleston
+          {c('hero.name_line2')}
         </h1>
 
         {/* Role with accent */}
         <div className="mb-8">
           <h2 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: '#cbd5e1' }}>
-            <span className="role-primary">Software Engineer</span>
+            <span className="role-primary">{c('hero.role_primary')}</span>
             <span className="role-separator"> / </span>
-            <span className="role-secondary">Full-Stack Developer</span>
+            <span className="role-secondary">{c('hero.role_secondary')}</span>
           </h2>
         </div>
 
         {/* Description - generous leading */}
         <p className="section-description text-lg leading-relaxed mb-12 max-w-2xl">
-          Building scalable systems and elegant interfaces from blueprint to deployment.
-          Specialised in Python automation, React ecosystems, and transforming complex
-          technical requirements into production-ready solutions.
+          {c('hero.description')}
         </p>
 
         {/* Arsenal - tech stack with micro labels */}
@@ -108,15 +108,15 @@ export default function Hero() {
           <span className="micro-label mb-2">Specifications</span>
           <div className="flex items-center gap-2">
             <span className="spec-key">Location</span>
-            <span className="spec-value spec-value--location">UK-Based</span>
+            <span className="spec-value spec-value--location">{c('hero.spec_location')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="spec-key">Experience</span>
-            <span className="spec-value spec-value--experience">14mo+ Industry</span>
+            <span className="spec-value spec-value--experience">{c('hero.spec_experience')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="spec-key">Status</span>
-            <span className="spec-value--accent">Active</span>
+            <span className="spec-value--accent">{c('hero.spec_status')}</span>
           </div>
         </div>
       </div>

@@ -53,4 +53,15 @@ export default {
     selector: '.spec-callout .spec-value--experience',
     hint: 'Brief experience descriptor shown in the specs panel, e.g. "14mo+ Industry"',
   },
+
+  'hero.spec_status': {
+    label: 'Status',
+    type: 'text',
+    selector: '.spec-callout .spec-value--accent',
+    hint: 'Status shown in the spec panel, e.g. "Active"',
+    ui: {
+      maxLength: 20,
+      placeholder: 'Active',
+    }
+  },
 };

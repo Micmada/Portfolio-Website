@@ -1,3 +1,5 @@
+import { c } from '../content.js';
+
 export default function Footer() {
   return (
     <footer
@@ -21,10 +23,10 @@ export default function Footer() {
               <div className="monogram">ME</div>
               <div>
                 <div className="text-sm font-bold uppercase tracking-[0.15em]" style={{ color: '#cbd5e1' }}>
-                  Michael Eddleston
+                  {c('footer.name')}
                 </div>
                 <div className="footer-role text-xs font-medium" style={{ color: '#64748b' }}>
-                  Software Engineer
+                  {c('footer.role')}
                 </div>
               </div>
             </div>
@@ -93,7 +95,7 @@ export default function Footer() {
               © {new Date().getFullYear()}
             </span>
             <span className="text-xs font-medium" style={{ color: '#94a3b8' }}>
-              Michael Eddleston. All rights reserved.
+              {c('footer.name')}. All rights reserved.
             </span>
           </div>
 
@@ -103,7 +105,7 @@ export default function Footer() {
               Designed &amp; built with
             </span>
             <span className="text-xs font-bold" style={{ color: '#274553' }}>
-              precision
+              {c('footer.tagline')}
             </span>
           </div>
         </div>
@@ -117,7 +119,7 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               <span className="micro-label">Built With</span>
               <span className="footer-built-with text-xs font-medium" style={{ color: '#94a3b8' }}>
-                React • Next.js • Tailwind
+                {c('footer.built_with')}
               </span>
             </div>
           </div>

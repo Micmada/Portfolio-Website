@@ -1,12 +1,14 @@
+import { c } from '../content.js';
+
 export default function Experience() {
   const experiences = [
     {
-      title: "Software Engineering Intern",
-      company: "ARM",
-      location: "Cambridge, UK",
-      period: "June 2023 – March 2025",
-      duration: "14 months",
-      description: "Developed and automated tools for generating the ARM Architecture Reference Manual, contributing to cutting-edge software platforms that met industry standards for efficiency, performance, and test coverage. Participated in decision-making for projects of various sizes, focusing on modern technologies and software development best practices.",
+      title: c('experience.role_title'),
+      company: c('experience.company'),
+      location: c('experience.location'),
+      period: c('experience.period'),
+      duration: c('experience.duration'),
+      description: c('experience.description'),
       bullets: [
         "Architected Python automation system to replace legacy documentation pipeline, reducing processing time from 1 week to under 24 hours for 20,000+ page technical specifications; delivered 2x efficiency improvement in production environment",
         "Debugged and resolved critical production issues identified in senior engineers' code, maintaining system stability for enterprise-scale documentation generation workflows",
@@ -40,8 +42,7 @@ export default function Experience() {
           </h2>
 
           <p className="section-description text-lg leading-relaxed max-w-2xl">
-            Industrial experience spanning enterprise-scale systems, automation pipelines,
-            and production infrastructure at a leading semiconductor company.
+            {c('experience.section_description')}
           </p>
         </div>
 
@@ -186,7 +187,7 @@ export default function Experience() {
                   >
                     <span className="micro-label block mb-2">Next Chapter</span>
                     <p className="text-sm" style={{ color: '#94a3b8' }}>
-                      Seeking new opportunities in software engineering
+                      {c('experience.next_chapter')}
                     </p>
                   </div>
                 </div>
@@ -200,13 +201,13 @@ export default function Experience() {
           <div>
             <span className="micro-label block mb-2">Academic Foundation</span>
             <h4 className="text-xl font-black uppercase mb-2" style={{ color: '#ffffff' }}>
-              BSc Software Engineering
+              {c('experience.degree')}
             </h4>
             <p className="university-name text-sm mb-1" style={{ color: '#274553' }}>
-              University of Winchester
+              {c('experience.university')}
             </p>
             <p className="text-sm" style={{ color: '#94a3b8' }}>
-              2:1 Honours • Graduated 2025
+              {c('experience.graduation')}
             </p>
           </div>
 

@@ -1,3 +1,5 @@
+import { c } from '../content.js';
+
 export default function Contact() {
   return (
     <section
@@ -17,21 +19,19 @@ export default function Contact() {
           </div>
 
           <h2 className="section-title font-black uppercase mb-6">
-            Let's Work
+            {c('contact.section_title_line1')}
             <br />
-            Together
+            {c('contact.section_title_line2')}
           </h2>
 
           <p className="section-description text-lg leading-relaxed max-w-2xl mb-4">
-            I'm actively seeking graduate software engineering opportunities. If you're looking for
-            a passionate developer who's eager to learn, contribute, and grow with your team,
-            I'd love to hear from you.
+            {c('contact.description')}
           </p>
 
           {/* Availability indicator */}
           <div className="status-badge mt-4">
             <span className="status-badge__dot" />
-            <span className="status-badge__text">Available Immediately</span>
+            <span className="status-badge__text">{c('contact.availability_status')}</span>
           </div>
         </div>
 
@@ -52,10 +52,10 @@ export default function Contact() {
                     Email Address
                   </label>
                   <a
-                    href="mailto:michael.eddleston@icloud.com"
+                    href={`mailto:${c('contact.email')}`}
                     className="email-link block text-2xl font-black group"
                   >
-                    michael.eddleston@icloud.com
+                    {c('contact.email')}
                     <span className="inline-block ml-2 transition-transform duration-300" style={{ fontSize: '20px' }}>
                       →
                     </span>
@@ -65,7 +65,7 @@ export default function Contact() {
                 {/* CTA Button */}
                 <div className="pt-4">
                   <a
-                    href="mailto:michael.eddleston@icloud.com"
+                    href={`mailto:${c('contact.email')}`}
                     className="btn-primary inline-flex items-center gap-3 px-8 py-4"
                   >
                     <span>Send Email</span>
@@ -93,8 +93,7 @@ export default function Contact() {
                 <div className="flex items-start gap-3">
                   <span className="arrow-bullet" style={{ fontSize: '16px' }}>→</span>
                   <p className="section-description text-sm leading-relaxed">
-                    I typically respond within 24 hours. Looking forward to discussing how I can
-                    contribute to your team's success.
+                    {c('contact.response_note')}
                   </p>
                 </div>
               </div>
@@ -107,10 +106,10 @@ export default function Contact() {
             <div className="card--muted p-6">
               <span className="micro-label block mb-3">Location</span>
               <div className="text-2xl font-black mb-2" style={{ color: '#274553' }}>
-                Milton Keynes, UK
+                {c('contact.location')}
               </div>
               <p className="text-sm" style={{ color: '#94a3b8' }}>
-                Open to relocation
+                {c('contact.location_note')}
               </p>
             </div>
 
@@ -154,7 +153,7 @@ export default function Contact() {
             <div className="card--dashed p-6">
               <span className="micro-label block mb-3">Interests</span>
               <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
-                Backend systems, automation, full-stack development, and continuous learning
+                {c('contact.interests')}
               </p>
             </div>
           </div>
@@ -166,14 +165,14 @@ export default function Contact() {
             <div>
               <span className="micro-label block mb-2">Current Status</span>
               <p className="text-base font-medium" style={{ color: '#cbd5e1' }}>
-                Actively interviewing for software engineering roles
+                {c('contact.current_status')}
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               <span className="status-badge__dot" />
               <span className="text-sm font-bold" style={{ color: '#274553' }}>
-                Seeking opportunities
+                {c('contact.status_badge')}
               </span>
             </div>
           </div>

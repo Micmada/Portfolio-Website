@@ -1,3 +1,5 @@
+import { c } from '../content.js';
+
 export default function Skills() {
   const skills = {
     Languages: ['Python', 'JavaScript', 'TypeScript', 'Go', 'SQL', 'HTML/CSS'],
@@ -57,8 +59,7 @@ export default function Skills() {
 
           {/* Description */}
           <p className="section-description text-lg leading-relaxed max-w-2xl">
-            A comprehensive toolkit spanning multiple languages, frameworks, and methodologies—
-            developed through academic training and industrial application.
+            {c('skills.section_description')}
           </p>
         </div>
 
@@ -126,8 +127,7 @@ export default function Skills() {
           <div>
             <span className="micro-label block mb-2">Core Competency</span>
             <p className="text-base leading-relaxed" style={{ color: '#cbd5e1' }}>
-              Full-stack development with emphasis on scalable backend systems,
-              modern frontend frameworks, and automated deployment pipelines.
+              {c('skills.core_competency')}
             </p>
           </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { c } from '../content.js';
 
 function ProjectDetail({ project, onClose }) {
   const [commits, setCommits] = useState([]);
@@ -381,8 +382,7 @@ export default function Projects({ onProjectOpen }) {
           </h2>
 
           <p className="section-description text-lg leading-relaxed max-w-2xl">
-            A curated collection of full-stack applications, automation systems, and
-            experimental prototypes—each demonstrating technical versatility and problem-solving.
+            {c('projects.section_description')}
           </p>
         </div>
 
