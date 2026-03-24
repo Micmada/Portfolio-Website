@@ -61,21 +61,17 @@ function ProjectDetail({ project, onClose }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          style={{ 
-            backgroundColor: 'rgba(21, 26, 29, 0.95)', 
+          style={{
+            backgroundColor: 'rgba(21, 26, 29, 0.95)',
             backdropFilter: 'blur(12px)',
-            fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
           }}
         >
           <motion.div
-            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 sm:p-10 md:p-12"
-            style={{ 
-              maxHeight: '85vh', 
-              backgroundColor: '#1f2528',
-              border: '1px solid rgba(39, 69, 83, 0.3)',
-              color: '#ffffff',
+            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 sm:p-10 md:p-12 card"
+            style={{
+              maxHeight: '85vh',
               overflowWrap: 'break-word',
-              wordBreak: 'break-word'
+              wordBreak: 'break-word',
             }}
             onClick={(e) => e.stopPropagation()}
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -86,44 +82,19 @@ function ProjectDetail({ project, onClose }) {
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center transition-all duration-300 font-bold text-2xl"
-              style={{ 
-                backgroundColor: 'rgba(39, 69, 83, 0.1)',
-                border: '1px solid rgba(39, 69, 83, 0.3)',
-                color: '#cbd5e1',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#274553';
-                e.currentTarget.style.color = '#ffffff';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(39, 69, 83, 0.1)';
-                e.currentTarget.style.color = '#cbd5e1';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
+              className="monogram absolute top-6 right-6 transition-all duration-300 font-bold text-2xl"
               aria-label="Close project details"
             >
               ×
             </button>
 
             {/* Project number */}
-            <span 
-              className="inline-block font-bold uppercase tracking-[0.3em] mb-4"
-              style={{
-                fontSize: '10px',
-                color: '#64748b',
-              }}
-            >
-              Project Details
-            </span>
+            <span className="micro-label inline-block mb-4">Project Details</span>
 
             {/* Project title */}
-            <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-tight mb-6 pr-12" 
-              style={{ 
-                color: '#ffffff',
-                lineHeight: '1.1',
-              }}
+            <h1
+              className="text-3xl sm:text-4xl font-black uppercase tracking-tight mb-6 pr-12"
+              style={{ color: '#ffffff', lineHeight: '1.1' }}
             >
               {project.title}
             </h1>
@@ -133,13 +104,7 @@ function ProjectDetail({ project, onClose }) {
               {[...project.languages, ...project.technologies].map(skill => (
                 <span
                   key={skill}
-                  className="rounded px-3 py-1.5 text-xs font-medium"
-                  style={{ 
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(39, 69, 83, 0.3)',
-                    color: '#cbd5e1',
-                    fontSize: '11px',
-                  }}
+                  className="tag tag--sm rounded px-3 py-1.5"
                 >
                   {skill}
                 </span>
@@ -147,7 +112,7 @@ function ProjectDetail({ project, onClose }) {
             </div>
 
             {/* Description */}
-            <p className="mb-8 text-base sm:text-lg leading-relaxed" style={{ color: '#94a3b8' }}>
+            <p className="section-description mb-8 text-base sm:text-lg leading-relaxed">
               {project.details}
             </p>
 
@@ -158,20 +123,7 @@ function ProjectDetail({ project, onClose }) {
                   href={project.hostedUrl || project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 font-bold uppercase tracking-wide text-sm transition-all duration-300"
-                  style={{ 
-                    backgroundColor: '#274553',
-                    color: '#ffffff',
-                    letterSpacing: '0.1em',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#2f5563';
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#274553';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
+                  className="btn-primary inline-flex items-center gap-2 px-6 py-3"
                 >
                   {project.hostedUrl ? 'View Live Site' : 'View on GitHub'}
                   <span style={{ fontSize: '16px' }}>→</span>
@@ -181,29 +133,14 @@ function ProjectDetail({ project, onClose }) {
 
             {/* Repository info */}
             {project.repoUrl && (
-              <section className="p-6 mb-8" 
-                style={{ 
-                  backgroundColor: 'rgba(39, 69, 83, 0.05)',
-                  borderLeft: '2px solid #274553',
-                }}
-              >
-                <span 
-                  className="block font-bold uppercase tracking-[0.3em] mb-4"
-                  style={{
-                    fontSize: '10px',
-                    color: '#64748b',
-                  }}
-                >
-                  Repository
-                </span>
+              <section className="callout-left--thin p-6 mb-8">
+                <span className="micro-label block mb-4">Repository</span>
                 <a
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mb-6 transition-colors duration-300 font-medium"
-                  style={{ 
-                    color: '#274553',
-                  }}
+                  className="inline-flex items-center gap-2 mb-6 font-medium text-link--secondary transition-colors duration-300"
+                  style={{ color: '#274553' }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#274553'}
                 >
@@ -211,15 +148,7 @@ function ProjectDetail({ project, onClose }) {
                 </a>
 
                 <div className="mt-6">
-                  <h3 
-                    className="font-bold uppercase tracking-[0.3em] mb-4"
-                    style={{ 
-                      fontSize: '10px',
-                      color: '#64748b',
-                    }}
-                  >
-                    Recent Commits
-                  </h3>
+                  <h3 className="micro-label mb-4">Recent Commits</h3>
                   {commitsError && (
                     <p style={{ color: '#fbbf24', fontSize: '13px' }}>
                       ⚠ Commits unavailable - View the repository to see commit history
@@ -232,16 +161,7 @@ function ProjectDetail({ project, onClose }) {
                     <ul className="space-y-3 max-h-64 overflow-auto">
                       {commits.map(commit => (
                         <li key={commit.sha} className="flex gap-3 items-start">
-                          <span 
-                            className="mt-2 flex-shrink-0"
-                            style={{ 
-                              color: '#274553',
-                              fontSize: '12px',
-                              fontWeight: '900',
-                            }}
-                          >
-                            →
-                          </span>
+                          <span className="arrow-bullet mt-2">→</span>
                           <div>
                             <a
                               href={commit.html_url}
@@ -268,98 +188,32 @@ function ProjectDetail({ project, onClose }) {
 
             {/* README */}
             {readme ? (
-              <section 
-                className="mt-8 p-6 overflow-hidden" 
-                style={{ 
+              <section
+                className="mt-8 p-6 overflow-hidden"
+                style={{
                   backgroundColor: '#151a1d',
                   border: '1px solid rgba(39, 69, 83, 0.2)',
                 }}
               >
-                <span 
-                  className="block font-bold uppercase tracking-[0.3em] mb-6"
-                  style={{
-                    fontSize: '10px',
-                    color: '#64748b',
-                  }}
-                >
-                  README.md
-                </span>
-                <div 
+                <span className="micro-label block mb-6">README.md</span>
+                <div
                   className="prose prose-invert prose-lg max-w-none"
-                  style={{ 
-                    color: '#94a3b8',
-                    overflowWrap: 'break-word',
-                    wordBreak: 'break-word',
-                    maxWidth: '100%'
-                  }}
+                  style={{ overflowWrap: 'break-word', wordBreak: 'break-word', maxWidth: '100%' }}
                 >
-                  <style jsx>{`
-                    .prose :global(h1),
-                    .prose :global(h2),
-                    .prose :global(h3) {
-                      color: #ffffff;
-                      font-weight: 800;
-                      text-transform: uppercase;
-                      letter-spacing: 0.05em;
-                    }
-                    .prose :global(a) {
-                      color: #274553;
-                      text-decoration: none;
-                      border-bottom: 1px solid rgba(39, 69, 83, 0.3);
-                      transition: all 0.3s;
-                    }
-                    .prose :global(a:hover) {
-                      color: #ffffff;
-                      border-bottom-color: #274553;
-                    }
-                    .prose :global(code) {
-                      background-color: rgba(39, 69, 83, 0.1);
-                      color: #cbd5e1;
-                      padding: 2px 6px;
-                      border-radius: 3px;
-                      font-size: 0.9em;
-                    }
-                    .prose :global(pre) {
-                      background-color: #151a1d;
-                      border: 1px solid rgba(39, 69, 83, 0.2);
-                      overflow-x: auto;
-                    }
-                    .prose :global(table) {
-                      border-collapse: collapse;
-                      width: 100%;
-                    }
-                    .prose :global(table td),
-                    .prose :global(table th) {
-                      border: 1px solid rgba(39, 69, 83, 0.2);
-                      padding: 8px 12px;
-                    }
-                    .prose :global(table th) {
-                      background-color: rgba(39, 69, 83, 0.1);
-                      color: #ffffff;
-                      font-weight: 700;
-                    }
-                    .prose :global(img) {
-                      max-width: 100%;
-                      height: auto;
-                    }
-                  `}</style>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
               </section>
             ) : readmeError ? (
-              <section 
-                className="mt-8 p-6" 
-                style={{ 
+              <section
+                className="mt-8 p-6"
+                style={{
                   backgroundColor: 'rgba(251, 191, 36, 0.1)',
                   border: '1px solid rgba(251, 191, 36, 0.3)',
                 }}
               >
-                <span 
+                <span
                   className="block font-bold uppercase tracking-[0.3em] mb-3"
-                  style={{
-                    fontSize: '10px',
-                    color: '#fbbf24',
-                  }}
+                  style={{ fontSize: '10px', color: '#fbbf24' }}
                 >
                   README.md
                 </span>
@@ -430,7 +284,7 @@ export default function Projects({ onProjectOpen }) {
 
   const toggleLanguage = lang => {
     setSelectedLanguage(selectedLanguage === lang ? null : lang);
-    setSelectedTechnologies([]); 
+    setSelectedTechnologies([]);
   };
 
   const toggleTechnology = tech => {
@@ -445,35 +299,35 @@ export default function Projects({ onProjectOpen }) {
 
   const getProjectColor = (project) => {
     if (selectedTechnologies.length === 0) {
-      return { 
+      return {
         bg: '#1f2528',
         text: '#ffffff',
         border: 'rgba(39, 69, 83, 0.2)',
         accentBg: 'rgba(39, 69, 83, 0.1)',
         accentText: '#cbd5e1'
-      }; 
+      };
     }
     const matches = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
     if (matches === 0) {
-      return { 
+      return {
         bg: '#1f2528',
         text: '#cbd5e1',
         border: 'rgba(239, 68, 68, 0.3)',
         accentBg: 'rgba(239, 68, 68, 0.1)',
         accentText: '#ef4444'
-      }; 
+      };
     }
     const ratio = matches / selectedTechnologies.length;
     if (ratio === 1) {
-      return { 
+      return {
         bg: '#1f2528',
         text: '#ffffff',
         border: 'rgba(16, 185, 129, 0.5)',
         accentBg: 'rgba(16, 185, 129, 0.2)',
         accentText: '#10b981'
-      }; 
+      };
     }
-    return { 
+    return {
       bg: '#1f2528',
       text: '#cbd5e1',
       border: 'rgba(251, 191, 36, 0.3)',
@@ -481,90 +335,53 @@ export default function Projects({ onProjectOpen }) {
       accentText: '#fbbf24'
     };
   };
- 
+
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (selectedTechnologies.length > 0) {
       const aMatches = a.technologies.filter(t => selectedTechnologies.includes(t)).length;
       const bMatches = b.technologies.filter(t => selectedTechnologies.includes(t)).length;
       const aRatio = aMatches / selectedTechnologies.length;
       const bRatio = bMatches / selectedTechnologies.length;
-      
+
       const getRank = (ratio, matches) => {
         if (matches === 0) return 1;
         if (ratio === 1) return 3;
         return 2;
       };
-      
+
       const rankDiff = getRank(bRatio, bMatches) - getRank(aRatio, aMatches);
       if (rankDiff !== 0) return rankDiff;
     }
-    
+
     const aDate = projectCommitDates[a.id] || new Date(0);
     const bDate = projectCommitDates[b.id] || new Date(0);
-    return bDate - aDate; 
+    return bDate - aDate;
   });
 
   return (
     <section
       id="projects"
-      className="w-full py-24 relative overflow-hidden"
-      style={{ 
-        backgroundColor: '#151a1d',
-        color: '#ffffff', 
-        scrollMarginTop: '80px',
-        fontFamily: "'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      }}
+      className="section w-full py-24 scroll-mt-20"
     >
       {/* Blueprint grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: 'radial-gradient(#274553 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-      />
+      <div className="blueprint-bg blueprint-bg--section" />
 
       <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-        {/* Section header - numbered system */}
+        {/* Section header */}
         <div className="mb-16">
-          {/* Section number and label */}
           <div className="flex items-center gap-4 mb-6">
-            <span 
-              className="font-black uppercase tracking-[0.4em]"
-              style={{
-                fontSize: '12px',
-                color: '#274553',
-              }}
-            >
-              04. Artifacts
-            </span>
-            <div 
-              className="h-px flex-1 max-w-[100px]"
-              style={{ backgroundColor: 'rgba(39, 69, 83, 0.2)' }}
-            />
+            <span className="section-label">04. Artifacts</span>
+            <div className="h-px flex-1 max-w-[100px] section-divider" />
           </div>
 
-          {/* Section title */}
-          <h2
-            className="font-black uppercase mb-4"
-            style={{ 
-              fontSize: 'clamp(2.5rem, 8vw, 5rem)',
-              lineHeight: '0.9',
-              letterSpacing: '-0.03em',
-              color: '#ffffff',
-            }}
-          >
+          <h2 className="section-title font-black uppercase mb-4">
             Selected
             <br />
             Projects
           </h2>
 
-          {/* Description */}
-          <p 
-            className="text-lg leading-relaxed max-w-2xl"
-            style={{ color: '#94a3b8' }}
-          >
-            A curated collection of full-stack applications, automation systems, and 
+          <p className="section-description text-lg leading-relaxed max-w-2xl">
+            A curated collection of full-stack applications, automation systems, and
             experimental prototypes—each demonstrating technical versatility and problem-solving.
           </p>
         </div>
@@ -573,15 +390,7 @@ export default function Projects({ onProjectOpen }) {
         <div className="mb-12 space-y-8">
           {/* Languages */}
           <div>
-            <span 
-              className="block font-bold uppercase tracking-[0.3em] mb-4"
-              style={{
-                fontSize: '10px',
-                color: '#64748b',
-              }}
-            >
-              Filter by Language
-            </span>
+            <span className="micro-label block mb-4">Filter by Language</span>
             <div className="flex flex-wrap gap-2">
               {languages.map(lang => (
                 <button
@@ -614,15 +423,7 @@ export default function Projects({ onProjectOpen }) {
 
           {/* Technologies */}
           <div>
-            <span 
-              className="block font-bold uppercase tracking-[0.3em] mb-4"
-              style={{
-                fontSize: '10px',
-                color: '#64748b',
-              }}
-            >
-              Filter by Technology
-            </span>
+            <span className="micro-label block mb-4">Filter by Technology</span>
             <div className="flex flex-wrap gap-2">
               {filteredTechnologies.map(tech => (
                 <button
@@ -656,25 +457,11 @@ export default function Projects({ onProjectOpen }) {
 
         {/* Projects count indicator */}
         <div className="mb-8 flex items-center gap-3">
-          <span 
-            className="font-bold uppercase tracking-[0.3em]"
-            style={{
-              fontSize: '10px',
-              color: '#64748b',
-            }}
-          >
-            Displaying
-          </span>
-          <span 
-            className="text-2xl font-black"
-            style={{ color: '#274553' }}
-          >
+          <span className="micro-label">Displaying</span>
+          <span className="text-2xl font-black" style={{ color: '#274553' }}>
             {sortedProjects.length}
           </span>
-          <span 
-            className="font-medium"
-            style={{ color: '#94a3b8' }}
-          >
+          <span className="font-medium" style={{ color: '#94a3b8' }}>
             {sortedProjects.length === 1 ? 'project' : 'projects'}
           </span>
         </div>
@@ -686,13 +473,11 @@ export default function Projects({ onProjectOpen }) {
             return (
               <div
                 key={project.id}
-                className="group p-6 transition-all duration-500 cursor-pointer"
+                className="group p-6 transition-all duration-500 cursor-pointer animate-fade-in-up"
                 onClick={() => setSelectedProject(project)}
                 style={{
                   backgroundColor: colors.bg,
                   border: `1px solid ${colors.border}`,
-                  opacity: 0,
-                  animation: `fadeInUp 0.5s ease-out forwards`,
                   animationDelay: `${index * 50}ms`,
                 }}
                 onMouseEnter={(e) => {
@@ -706,19 +491,13 @@ export default function Projects({ onProjectOpen }) {
               >
                 {/* Project number indicator */}
                 <div className="flex items-center justify-between mb-4">
-                  <span 
-                    className="font-bold uppercase tracking-[0.3em]"
-                    style={{
-                      fontSize: '10px',
-                      color: '#64748b',
-                    }}
-                  >
+                  <span className="micro-label">
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  
+
                   {/* Match indicator */}
                   {selectedTechnologies.length > 0 && (
-                    <span 
+                    <span
                       className="px-2 py-1 rounded text-xs font-bold"
                       style={{
                         backgroundColor: colors.accentBg,
@@ -731,29 +510,23 @@ export default function Projects({ onProjectOpen }) {
                   )}
                 </div>
 
-                <h3 
+                <h3
                   className="text-xl font-black uppercase tracking-wide mb-3"
-                  style={{ 
-                    color: colors.text,
-                    lineHeight: '1.2',
-                  }}
+                  style={{ color: colors.text, lineHeight: '1.2' }}
                 >
                   {project.title}
                 </h3>
-                
-                <p 
-                  className="mb-4 text-sm leading-relaxed"
-                  style={{ color: '#94a3b8' }}
-                >
+
+                <p className="mb-4 text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
                   {project.description}
                 </p>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.slice(0, 3).map(skill => (
                     <span
                       key={skill}
                       className="text-xs rounded px-2 py-1 font-medium"
-                      style={{ 
+                      style={{
                         backgroundColor: colors.accentBg,
                         color: colors.accentText,
                         fontSize: '11px',
@@ -765,7 +538,7 @@ export default function Projects({ onProjectOpen }) {
                   {project.technologies.length > 3 && (
                     <span
                       className="text-xs rounded px-2 py-1 font-medium"
-                      style={{ 
+                      style={{
                         backgroundColor: colors.accentBg,
                         color: colors.accentText,
                         fontSize: '11px',
@@ -777,9 +550,9 @@ export default function Projects({ onProjectOpen }) {
                 </div>
 
                 {/* Hover arrow indicator */}
-                <div 
+                <div
                   className="mt-4 pt-4 border-t flex items-center gap-2 transition-all duration-300"
-                  style={{ 
+                  style={{
                     borderColor: 'rgba(39, 69, 83, 0.2)',
                     opacity: 0,
                   }}
@@ -799,22 +572,6 @@ export default function Projects({ onProjectOpen }) {
 
         {selectedProject && <ProjectDetail project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        /* Ensure Epilogue font is loaded */
-        @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800;900&display=swap');
-      `}</style>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
-
+@import './global.css';
 
 html {
   background-color: #151a1d;
