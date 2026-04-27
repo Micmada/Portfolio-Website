@@ -41,7 +41,7 @@ export default function Hero() {
 
       {/* Info strip — three columns */}
       <div className="container" style={{ padding: '40px 48px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '48px' }}>
+        <div className="hero-info-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '48px' }}>
         {/* Col 1: bio */}
         <div>
           <div className="micro-label" style={{ marginBottom: 12 }}>About</div>
@@ -74,7 +74,7 @@ export default function Hero() {
 
       {/* Bottom hint strip */}
       <div style={{ borderTop: 'var(--bar-h) solid var(--bar)' }}>
-        <div className="container" style={{ padding: '12px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container hero-bottom-strip" style={{ padding: '12px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span className="micro-label">Re-site · Pantheon · ARM</span>
           <span className="micro-label">Scroll ↓</span>
         </div>

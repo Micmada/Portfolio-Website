@@ -1,67 +1,41 @@
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { c } from '../content.js';
 
-// ── Commits & README fetcher ─────────────────────────────────
+// ── Commits fetcher ──────────────────────────────────────────
 function useGitHub(project) {
   const [commits, setCommits] = useState([]);
   const [commitsError, setCommitsError] = useState(null);
-  const [readme, setReadme] = useState('');
-  const [readmeError, setReadmeError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!project) return;
-    setLoading(true);
     setCommits([]);
     setCommitsError(null);
-    setReadme('');
-    setReadmeError(null);
 
     const TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
     const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
 
-    // Commits
     if (project.commitsApiUrl) {
       fetch(project.commitsApiUrl, { headers })
         .then(r => { if (!r.ok) throw new Error(`GitHub ${r.status}`); return r.json(); })
         .then(data => setCommits(data.slice(0, 5)))
         .catch(e => setCommitsError(e.message));
     }
-
-    // README
-    if (project.repoUrl) {
-      const match = project.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      if (match) {
-        const [, owner, repo] = match;
-        fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers })
-          .then(r => { if (!r.ok) throw new Error(`GitHub ${r.status}`); return r.json(); })
-          .then(data => {
-            const decoded = decodeURIComponent(escape(atob(data.content)));
-            setReadme(decoded.replace(/^---\s*\n[\s\S]*?\n---\s*\n/m, ''));
-          })
-          .catch(e => setReadmeError(e.message))
-          .finally(() => setLoading(false));
-      }
-    } else {
-      setLoading(false);
-    }
   }, [project?.id]);
 
-  return { commits, commitsError, readme, readmeError, loading };
+  return { commits, commitsError };
 }
 
 
 // ── Expanded project detail ──────────────────────────────────
 function ProjectDetail({ project }) {
-  const { commits, commitsError, readme, readmeError, loading } = useGitHub(project);
+  const { commits, commitsError } = useGitHub(project);
 
   return (
     <div className="row__expand-inner" style={{ paddingLeft: 48 }}>
 
       {/* Top meta row */}
       <div
+        className="project-detail-meta"
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr auto',
@@ -179,51 +153,6 @@ function ProjectDetail({ project }) {
                   </div>
                 </a>
               ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* README */}
-      {(readme || readmeError) && (
-        <div className="readme-block">
-          <div className="readme-block__header">
-            <span className="micro-label">README.md</span>
-            {project.repoUrl && (
-              <a
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  color: 'var(--mid)',
-                  textDecoration: 'none',
-                }}
-              >
-                Fetched from GitHub API
-              </a>
-            )}
-          </div>
-
-          {readmeError ? (
-            <div
-              style={{
-                padding: '16px 20px',
-                background: 'var(--surface)',
-                borderLeft: 'var(--bar-h) solid var(--faint)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                color: 'var(--mid)',
-              }}
-            >
-              ⚠ README unavailable — visit the repository for documentation
-            </div>
-          ) : (
-            <div className="readme-content">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
             </div>
           )}
         </div>

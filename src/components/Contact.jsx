@@ -16,6 +16,7 @@ export default function Contact() {
       <div className="row" style={{ cursor: 'default' }}>
         <div className="container">
           <div
+            className="contact-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr 280px',

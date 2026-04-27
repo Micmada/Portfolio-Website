@@ -25,7 +25,7 @@ export default function Skills() {
       {/* Skill rows */}
       {entries.map(([category, items], i) => (
         <div className="row" key={category}>
-          <div className="row__inner" style={{ gridTemplateColumns: '48px 240px 1fr auto', padding: '22px 48px' }}>
+          <div className="row__inner skills-row__inner" style={{ gridTemplateColumns: '48px 240px 1fr auto', padding: '22px 48px' }}>
             {/* Number */}
             <span className="row__num">0{i + 1}</span>
 
@@ -42,7 +42,7 @@ export default function Skills() {
             </div>
 
             {/* Count */}
-            <span className="micro-label">{items.length}</span>
+            <span className="micro-label skills-row__count">{items.length}</span>
           </div>
         </div>
       ))}

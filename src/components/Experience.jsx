@@ -54,8 +54,7 @@ export default function Experience() {
 
             {/* Collapsed row */}
             <div
-              className="row__inner"
-              style={{ gridTemplateColumns: '48px 1fr auto auto', padding: '20px 48px', gap: 24 }}
+              className="row__inner exp-row__inner"
               onClick={() => setExpandedIdx(open ? null : i)}
             >
               <span className="row__num">{exp.num}</span>
@@ -114,10 +113,7 @@ export default function Experience() {
       {/* Education rows */}
       {EDUCATION.map((edu, i) => (
         <div key={i} className="row">
-          <div
-            className="row__inner"
-            style={{ gridTemplateColumns: '48px 1fr auto', padding: '20px 48px', gap: 24 }}
-          >
+          <div className="row__inner exp-row__inner">
             <span className="row__num">{edu.num}</span>
 
             <div>
