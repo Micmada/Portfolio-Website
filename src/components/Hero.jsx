@@ -3,121 +3,80 @@ import { c } from '../content.js';
 export default function Hero() {
   return (
     <section
-      className="section min-h-screen flex items-center px-6"
-      style={{ paddingTop: '80px' }}
+      id="hero"
+      className="section"
+      style={{ paddingTop: 'var(--navbar-height)', borderBottom: 'var(--bar-h) solid var(--bar)' }}
     >
-      {/* Blueprint grid pattern background */}
-      <div className="blueprint-bg blueprint-bg--hero" />
-
-      {/* Subtle gradient sweep */}
-      <div className="gradient-sweep" />
-
-      {/* Main content container - max 1200px */}
-      <div className="max-w-[1200px] w-full mx-auto relative z-10">
-        {/* Status indicator with pulse */}
-        <div className="status-badge mb-12">
-          <span className="status-badge__dot" />
-          <span className="status-badge__text">{c('hero.status')}</span>
+      {/* Name block */}
+      <div style={{ borderBottom: 'var(--bar-h) solid var(--bar)' }}>
+        <div className="container" style={{ padding: '80px 48px 60px' }}>
+        <div className="micro-label" style={{ marginBottom: 20 }}>
+          ↳ SOFTWARE ENGINEER · MILTON KEYNES, UK
         </div>
 
-        {/* Section label - numbered system */}
-        <div className="flex items-center gap-4 mb-6">
-          <span className="section-label">01. Introduction</span>
-          <div className="h-px flex-1 max-w-[100px] section-divider" />
-        </div>
-
-        {/* Main headline - dramatic scale and tracking */}
-        <h1 className="section-title section-title--hero font-black uppercase mb-4">
+        <h1 className="display" style={{ marginBottom: 0 }}>
           {c('hero.name')}
-          <br />
+        </h1>
+        <h1 className="display" style={{ marginBottom: 0 }}>
           {c('hero.name_line2')}
         </h1>
 
-        {/* Role with accent */}
-        <div className="mb-8">
-          <h2 className="text-2xl sm:text-3xl font-light tracking-wide" style={{ color: '#cbd5e1' }}>
-            <span className="role-primary">{c('hero.role_primary')}</span>
-            <span className="role-separator"> / </span>
-            <span className="role-secondary">{c('hero.role_secondary')}</span>
-          </h2>
+        {/* Small spec tags top-right — hidden on mobile */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 'calc(var(--navbar-height) + 80px)',
+            right: 48,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+          }}
+          className="hidden lg:flex"
+        >
+          <span className="micro-label">{c('hero.spec_location')}</span>
+          <span className="micro-label">{c('hero.spec_experience')}</span>
+        </div>
+        </div>
+      </div>
+
+      {/* Info strip — three columns */}
+      <div className="container" style={{ padding: '40px 48px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '48px' }}>
+        {/* Col 1: bio */}
+        <div>
+          <div className="micro-label" style={{ marginBottom: 12 }}>About</div>
+          <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--mid)', maxWidth: 420 }}>
+            {c('hero.description')}
+          </p>
         </div>
 
-        {/* Description - generous leading */}
-        <p className="section-description text-lg leading-relaxed mb-12 max-w-2xl">
-          {c('hero.description')}
-        </p>
-
-        {/* Arsenal - tech stack with micro labels */}
-        <div className="mb-16">
-          <div className="mb-4">
-            <span className="micro-label">Arsenal</span>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {[
-              'Python',
-              'TypeScript',
-              'React',
-              'Node.js',
-              'PostgreSQL',
-              'System Design'
-            ].map((tech) => (
-              <span
-                key={tech}
-                className="tag px-4 py-2 text-sm rounded transition-all duration-300"
-              >
-                {tech}
-              </span>
+        {/* Col 2: stack */}
+        <div>
+          <div className="micro-label" style={{ marginBottom: 12 }}>Core Stack</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {['Python', 'TypeScript', 'React', 'Node.js', 'PostgreSQL', 'AWS', 'Go'].map(t => (
+              <span key={t} className="tag">{t}</span>
             ))}
           </div>
         </div>
 
-        {/* CTAs - primary and secondary pattern */}
-        <div className="flex flex-col sm:flex-row gap-4 items-start">
-          <a
-            href="#projects"
-            className="btn-primary group inline-flex items-center gap-3 px-8 py-4"
-          >
-            <span>View Projects</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            >
-              <path
-                d="M1 8h14M9 1l7 7-7 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+        {/* Col 3: CTAs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignSelf: 'flex-end' }}>
+          <a href="#projects" className="btn btn--primary">
+            View Work <span>→</span>
           </a>
-
-          <a
-            href="#contact"
-            className="btn-secondary inline-flex items-center gap-3 px-8 py-4"
-          >
-            <span>Get in Touch</span>
+          <a href="#contact" className="btn btn--outline">
+            Get in Touch <span>↗</span>
           </a>
         </div>
+        </div>
+      </div>
 
-        {/* Specifications callout - architectural detail */}
-        <div className="spec-callout absolute bottom-12 right-0 hidden lg:flex flex-col gap-1 px-6 py-4">
-          <span className="micro-label mb-2">Specifications</span>
-          <div className="flex items-center gap-2">
-            <span className="spec-key">Location</span>
-            <span className="spec-value spec-value--location">{c('hero.spec_location')}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="spec-key">Experience</span>
-            <span className="spec-value spec-value--experience">{c('hero.spec_experience')}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="spec-key">Status</span>
-            <span className="spec-value--accent">{c('hero.spec_status')}</span>
-          </div>
+      {/* Bottom hint strip */}
+      <div style={{ borderTop: 'var(--bar-h) solid var(--bar)' }}>
+        <div className="container" style={{ padding: '12px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="micro-label">Re-site · Pantheon · ARM</span>
+          <span className="micro-label">Scroll ↓</span>
         </div>
       </div>
     </section>

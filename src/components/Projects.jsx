@@ -1,577 +1,472 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { c } from '../content.js';
 
-function ProjectDetail({ project, onClose }) {
+// ── Commits & README fetcher ─────────────────────────────────
+function useGitHub(project) {
   const [commits, setCommits] = useState([]);
   const [commitsError, setCommitsError] = useState(null);
   const [readme, setReadme] = useState('');
   const [readmeError, setReadmeError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!project) return;
+    setLoading(true);
+    setCommits([]);
+    setCommitsError(null);
+    setReadme('');
+    setReadmeError(null);
 
-    // GitHub Personal Access Token (read-only, public repos only)
-    // Generate at: https://github.com/settings/tokens
-    const GITHUB_TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
-    const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
+    const TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
+    const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
 
+    // Commits
     if (project.commitsApiUrl) {
       fetch(project.commitsApiUrl, { headers })
-        .then(res => {
-          if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-          return res.json();
-        })
+        .then(r => { if (!r.ok) throw new Error(`GitHub ${r.status}`); return r.json(); })
         .then(data => setCommits(data.slice(0, 5)))
-        .catch(err => {
-          console.error('Commits fetch error:', err);
-          setCommitsError(err.message);
-        });
+        .catch(e => setCommitsError(e.message));
     }
 
+    // README
     if (project.repoUrl) {
       const match = project.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      if (!match) return;
-      const [_, owner, repo] = match;
-
-      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers })
-        .then(res => {
-          if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          const decodedContent = decodeURIComponent(escape(atob(data.content)));
-          const withoutYaml = decodedContent.replace(/^---\s*\n[\s\S]*?\n---\s*\n/m, '');
-          setReadme(withoutYaml);
-        })
-        .catch(err => {
-          console.error('README fetch error:', err);
-          setReadmeError(err.message);
-        });
+      if (match) {
+        const [, owner, repo] = match;
+        fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers })
+          .then(r => { if (!r.ok) throw new Error(`GitHub ${r.status}`); return r.json(); })
+          .then(data => {
+            const decoded = decodeURIComponent(escape(atob(data.content)));
+            setReadme(decoded.replace(/^---\s*\n[\s\S]*?\n---\s*\n/m, ''));
+          })
+          .catch(e => setReadmeError(e.message))
+          .finally(() => setLoading(false));
+      }
+    } else {
+      setLoading(false);
     }
-  }, [project]);
+  }, [project?.id]);
+
+  return { commits, commitsError, readme, readmeError, loading };
+}
+
+
+// ── Expanded project detail ──────────────────────────────────
+function ProjectDetail({ project }) {
+  const { commits, commitsError, readme, readmeError, loading } = useGitHub(project);
 
   return (
-    <AnimatePresence>
-      {project && (
-        <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50 p-6 overflow-auto"
-          onClick={onClose}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          style={{
-            backgroundColor: 'rgba(21, 26, 29, 0.95)',
-            backdropFilter: 'blur(12px)',
-          }}
-        >
-          <motion.div
-            className="relative max-w-4xl w-full max-h-full overflow-y-auto p-8 sm:p-10 md:p-12 card"
-            style={{
-              maxHeight: '85vh',
-              overflowWrap: 'break-word',
-              wordBreak: 'break-word',
-            }}
-            onClick={(e) => e.stopPropagation()}
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="monogram absolute top-6 right-6 transition-all duration-300 font-bold text-2xl"
-              aria-label="Close project details"
-            >
-              ×
-            </button>
+    <div className="row__expand-inner" style={{ paddingLeft: 48 }}>
 
-            {/* Project number */}
-            <span className="micro-label inline-block mb-4">Project Details</span>
+      {/* Top meta row */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto',
+          gap: 48,
+          marginBottom: 32,
+          paddingBottom: 32,
+          borderBottom: '1px solid var(--rule)',
+        }}
+      >
+        {/* Description */}
+        <div>
+          <span className="micro-label" style={{ display: 'block', marginBottom: 10 }}>Overview</span>
+          <p style={{ fontSize: 14, color: 'var(--mid)', lineHeight: 1.75, maxWidth: 680 }}>
+            {project.details || project.description}
+          </p>
 
-            {/* Project title */}
-            <h1
-              className="text-3xl sm:text-4xl font-black uppercase tracking-tight mb-6 pr-12"
-              style={{ color: '#ffffff', lineHeight: '1.1' }}
-            >
-              {project.title}
-            </h1>
-
-            {/* Tech stack */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {[...project.languages, ...project.technologies].map(skill => (
-                <span
-                  key={skill}
-                  className="tag tag--sm rounded px-3 py-1.5"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-
-            {/* Description */}
-            <p className="section-description mb-8 text-base sm:text-lg leading-relaxed">
-              {project.details}
-            </p>
-
-            {/* CTA buttons */}
-            {(project.hostedUrl || project.repoUrl) && (
-              <div className="flex flex-wrap gap-4 mb-12">
+          {/* CTA buttons */}
+          {(project.hostedUrl || project.repoUrl) && (
+            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              {project.hostedUrl && (
                 <a
-                  href={project.hostedUrl || project.repoUrl}
+                  href={project.hostedUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-primary inline-flex items-center gap-2 px-6 py-3"
+                  className="btn btn--primary"
                 >
-                  {project.hostedUrl ? 'View Live Site' : 'View on GitHub'}
-                  <span style={{ fontSize: '16px' }}>→</span>
+                  Live Site ↗
                 </a>
-              </div>
-            )}
-
-            {/* Repository info */}
-            {project.repoUrl && (
-              <section className="callout-left--thin p-6 mb-8">
-                <span className="micro-label block mb-4">Repository</span>
+              )}
+              {project.repoUrl && (
                 <a
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mb-6 font-medium text-link--secondary transition-colors duration-300"
-                  style={{ color: '#274553' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#274553'}
+                  className="btn btn--outline"
                 >
-                  Visit GitHub Repository →
+                  GitHub →
                 </a>
+              )}
+            </div>
+          )}
+        </div>
 
-                <div className="mt-6">
-                  <h3 className="micro-label mb-4">Recent Commits</h3>
-                  {commitsError && (
-                    <p style={{ color: '#fbbf24', fontSize: '13px' }}>
-                      ⚠ Commits unavailable - View the repository to see commit history
-                    </p>
-                  )}
-                  {!commitsError && commits.length === 0 && (
-                    <p style={{ color: '#64748b' }}>Loading commits...</p>
-                  )}
-                  {commits.length > 0 && (
-                    <ul className="space-y-3 max-h-64 overflow-auto">
-                      {commits.map(commit => (
-                        <li key={commit.sha} className="flex gap-3 items-start">
-                          <span className="arrow-bullet mt-2">→</span>
-                          <div>
-                            <a
-                              href={commit.html_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="hover:underline text-sm transition-colors duration-300"
-                              style={{ color: '#cbd5e1' }}
-                              onMouseEnter={(e) => e.currentTarget.style.color = '#274553'}
-                              onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                            >
-                              {commit.commit.message.split('\n')[0]}
-                            </a>
-                            <span className="block text-xs mt-1" style={{ color: '#64748b' }}>
-                              {new Date(commit.commit.author.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </section>
-            )}
+        {/* Tech stack */}
+        <div style={{ minWidth: 200 }}>
+          <span className="micro-label" style={{ display: 'block', marginBottom: 10 }}>Stack</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {[...project.languages, ...project.technologies].map(t => (
+              <span key={t} className="tag" style={{ width: 'fit-content' }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
 
-            {/* README */}
-            {readme ? (
-              <section
-                className="mt-8 p-6 overflow-hidden"
-                style={{
-                  backgroundColor: '#151a1d',
-                  border: '1px solid rgba(39, 69, 83, 0.2)',
-                }}
-              >
-                <span className="micro-label block mb-6">README.md</span>
-                <div
-                  className="prose prose-invert prose-lg max-w-none"
-                  style={{ overflowWrap: 'break-word', wordBreak: 'break-word', maxWidth: '100%' }}
+      {/* Repository + commits */}
+      {project.repoUrl && (
+        <div style={{ marginBottom: 32 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 16,
+            }}
+          >
+            <span className="micro-label">Recent Commits</span>
+            <a
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'var(--mid)',
+                textDecoration: 'none',
+              }}
+            >
+              View Repository →
+            </a>
+          </div>
+
+          {commitsError && (
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--mid)' }}>
+              ⚠ Commits unavailable
+            </p>
+          )}
+
+          {!commitsError && commits.length === 0 && (
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--faint)' }}>
+              Loading commits…
+            </p>
+          )}
+
+          {commits.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {commits.map(commit => (
+                <a
+                  key={commit.sha}
+                  href={commit.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="commit-item"
+                  style={{ textDecoration: 'none' }}
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
-                </div>
-              </section>
-            ) : readmeError ? (
-              <section
-                className="mt-8 p-6"
-                style={{
-                  backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                  border: '1px solid rgba(251, 191, 36, 0.3)',
-                }}
-              >
-                <span
-                  className="block font-bold uppercase tracking-[0.3em] mb-3"
-                  style={{ fontSize: '10px', color: '#fbbf24' }}
-                >
-                  README.md
-                </span>
-                <p style={{ color: '#fbbf24', fontSize: '13px' }}>
-                  ⚠ README unavailable - Visit the repository for full documentation
-                </p>
-              </section>
-            ) : null}
-          </motion.div>
-        </motion.div>
+                  <span style={{ color: 'var(--mid)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: 12 }}>→</span>
+                  <div>
+                    <div className="commit-item__msg">
+                      {commit.commit.message.split('\n')[0]}
+                    </div>
+                    <div className="commit-item__meta">
+                      {commit.sha.slice(0, 7)} · {new Date(commit.commit.author.date).toLocaleDateString()}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       )}
-    </AnimatePresence>
+
+      {/* README */}
+      {(readme || readmeError) && (
+        <div className="readme-block">
+          <div className="readme-block__header">
+            <span className="micro-label">README.md</span>
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: 'var(--mid)',
+                  textDecoration: 'none',
+                }}
+              >
+                Fetched from GitHub API
+              </a>
+            )}
+          </div>
+
+          {readmeError ? (
+            <div
+              style={{
+                padding: '16px 20px',
+                background: 'var(--surface)',
+                borderLeft: 'var(--bar-h) solid var(--faint)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                color: 'var(--mid)',
+              }}
+            >
+              ⚠ README unavailable — visit the repository for documentation
+            </div>
+          ) : (
+            <div className="readme-content">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
+            </div>
+          )}
+        </div>
+      )}
+
+    </div>
   );
 }
 
+
+// ── Main Projects component ──────────────────────────────────
 export default function Projects({ onProjectOpen }) {
-  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [selectedLanguage, setSelectedLanguage]       = useState(null);
   const [selectedTechnologies, setSelectedTechnologies] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [languages, setLanguages] = useState([]);
-  const [technologies, setTechnologies] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [projectCommitDates, setProjectCommitDates] = useState({});
+  const [projects, setProjects]                       = useState([]);
+  const [languages, setLanguages]                     = useState([]);
+  const [technologies, setTechnologies]               = useState([]);
+  const [expandedId, setExpandedId]                   = useState(null);
+  const [projectCommitDates, setProjectCommitDates]   = useState({});
 
-  // Notify parent when project opens/closes
+  // Notify parent when a project is open
   useEffect(() => {
-    if (onProjectOpen) {
-      onProjectOpen(selectedProject !== null);
-    }
-  }, [selectedProject, onProjectOpen]);
+    if (onProjectOpen) onProjectOpen(expandedId !== null);
+  }, [expandedId, onProjectOpen]);
 
+  // Fetch projects from API
   useEffect(() => {
-    const GITHUB_TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
-    const headers = GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {};
+    const TOKEN = import.meta.env.VITE_APP_GITHUB_TOKEN || '';
+    const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
 
-    fetch("https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects")
-      .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch projects'))
+    fetch('https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects')
+      .then(r => r.ok ? r.json() : Promise.reject('Failed'))
       .then(data => {
         const parsed = data.map(p => ({
           ...p,
-          languages: Array.isArray(p.languages) ? p.languages : p.languages?.split(',') || [],
-          technologies: Array.isArray(p.technologies) ? p.technologies : p.technologies?.split(',') || [],
+          languages:    Array.isArray(p.languages)    ? p.languages    : (p.languages?.split(',')    || []),
+          technologies: Array.isArray(p.technologies) ? p.technologies : (p.technologies?.split(',') || []),
         }));
 
         setProjects(parsed);
         setLanguages(Array.from(new Set(parsed.flatMap(p => p.languages))).sort());
         setTechnologies(Array.from(new Set(parsed.flatMap(p => p.technologies))).sort());
 
-        // Fetch latest commit date for each project
+        // Fetch latest commit dates
         parsed.forEach(project => {
-          if (project.commitsApiUrl) {
-            fetch(project.commitsApiUrl, { headers })
-              .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch commits'))
-              .then(commits => {
-                if (commits.length > 0) {
-                  setProjectCommitDates(prev => ({
-                    ...prev,
-                    [project.id]: new Date(commits[0].commit.author.date)
-                  }));
-                }
-              })
-              .catch(err => console.error(`Error fetching commits for ${project.title}:`, err));
-          }
+          if (!project.commitsApiUrl) return;
+          fetch(project.commitsApiUrl, { headers })
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(commits => {
+              if (commits.length > 0) {
+                setProjectCommitDates(prev => ({
+                  ...prev,
+                  [project.id]: new Date(commits[0].commit.author.date),
+                }));
+              }
+            })
+            .catch(() => {});
         });
       })
-      .catch(err => console.error('API fetch error:', err));
+      .catch(err => console.error('API error:', err));
   }, []);
 
   const toggleLanguage = lang => {
-    setSelectedLanguage(selectedLanguage === lang ? null : lang);
+    setSelectedLanguage(l => l === lang ? null : lang);
     setSelectedTechnologies([]);
   };
 
-  const toggleTechnology = tech => {
-    setSelectedTechnologies(prev => prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]);
+  const toggleTech = tech => {
+    setSelectedTechnologies(prev =>
+      prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]
+    );
   };
 
   const filteredProjects = selectedLanguage
     ? projects.filter(p => p.languages.includes(selectedLanguage))
     : projects;
 
-  const filteredTechnologies = Array.from(new Set(filteredProjects.flatMap(p => p.technologies))).sort();
+  const filteredTechnologies = Array.from(
+    new Set(filteredProjects.flatMap(p => p.technologies))
+  ).sort();
 
-  const getProjectColor = (project) => {
-    if (selectedTechnologies.length === 0) {
-      return {
-        bg: '#1f2528',
-        text: '#ffffff',
-        border: 'rgba(39, 69, 83, 0.2)',
-        accentBg: 'rgba(39, 69, 83, 0.1)',
-        accentText: '#cbd5e1'
-      };
-    }
+  const getMatchState = project => {
+    if (selectedTechnologies.length === 0) return 'none';
     const matches = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
-    if (matches === 0) {
-      return {
-        bg: '#1f2528',
-        text: '#cbd5e1',
-        border: 'rgba(239, 68, 68, 0.3)',
-        accentBg: 'rgba(239, 68, 68, 0.1)',
-        accentText: '#ef4444'
-      };
-    }
-    const ratio = matches / selectedTechnologies.length;
-    if (ratio === 1) {
-      return {
-        bg: '#1f2528',
-        text: '#ffffff',
-        border: 'rgba(16, 185, 129, 0.5)',
-        accentBg: 'rgba(16, 185, 129, 0.2)',
-        accentText: '#10b981'
-      };
-    }
-    return {
-      bg: '#1f2528',
-      text: '#cbd5e1',
-      border: 'rgba(251, 191, 36, 0.3)',
-      accentBg: 'rgba(251, 191, 36, 0.1)',
-      accentText: '#fbbf24'
-    };
+    if (matches === 0) return 'none';
+    return matches === selectedTechnologies.length ? 'full' : 'partial';
   };
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (selectedTechnologies.length > 0) {
-      const aMatches = a.technologies.filter(t => selectedTechnologies.includes(t)).length;
-      const bMatches = b.technologies.filter(t => selectedTechnologies.includes(t)).length;
-      const aRatio = aMatches / selectedTechnologies.length;
-      const bRatio = bMatches / selectedTechnologies.length;
-
-      const getRank = (ratio, matches) => {
-        if (matches === 0) return 1;
-        if (ratio === 1) return 3;
-        return 2;
-      };
-
-      const rankDiff = getRank(bRatio, bMatches) - getRank(aRatio, aMatches);
-      if (rankDiff !== 0) return rankDiff;
+      const scoreA = a.technologies.filter(t => selectedTechnologies.includes(t)).length / selectedTechnologies.length;
+      const scoreB = b.technologies.filter(t => selectedTechnologies.includes(t)).length / selectedTechnologies.length;
+      if (scoreB !== scoreA) return scoreB - scoreA;
     }
-
     const aDate = projectCommitDates[a.id] || new Date(0);
     const bDate = projectCommitDates[b.id] || new Date(0);
     return bDate - aDate;
   });
 
+  const toggleExpand = id => {
+    setExpandedId(prev => prev === id ? null : id);
+  };
+
   return (
-    <section
-      id="projects"
-      className="section w-full py-24 scroll-mt-20"
-    >
-      {/* Blueprint grid pattern */}
-      <div className="blueprint-bg blueprint-bg--section" />
+    <section id="projects" className="section" style={{ scrollMarginTop: 'var(--navbar-height)' }}>
 
-      <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-4 mb-6">
-            <span className="section-label">04. Artifacts</span>
-            <div className="h-px flex-1 max-w-[100px] section-divider" />
-          </div>
-
-          <h2 className="section-title font-black uppercase mb-4">
-            Selected
-            <br />
-            Projects
-          </h2>
-
-          <p className="section-description text-lg leading-relaxed max-w-2xl">
-            {c('projects.section_description')}
-          </p>
-        </div>
-
-        {/* Filters */}
-        <div className="mb-12 space-y-8">
-          {/* Languages */}
-          <div>
-            <span className="micro-label block mb-4">Filter by Language</span>
-            <div className="flex flex-wrap gap-2">
-              {languages.map(lang => (
-                <button
-                  key={lang}
-                  onClick={() => toggleLanguage(lang)}
-                  className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
-                  style={{
-                    backgroundColor: selectedLanguage === lang ? '#274553' : 'transparent',
-                    color: selectedLanguage === lang ? '#ffffff' : '#cbd5e1',
-                    border: `1px solid ${selectedLanguage === lang ? '#274553' : 'rgba(39, 69, 83, 0.3)'}`,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (selectedLanguage !== lang) {
-                      e.currentTarget.style.borderColor = 'rgba(39, 69, 83, 0.5)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (selectedLanguage !== lang) {
-                      e.currentTarget.style.borderColor = 'rgba(39, 69, 83, 0.3)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }
-                  }}
-                >
-                  {lang}
-                </button>
-              ))}
+      {/* Section header */}
+      <div className="section-header section-header--bordered">
+        <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div>
+              <div className="micro-label" style={{ marginBottom: 12 }}>04 — Projects</div>
+              <h2 className="section-title">Selected<br />Work</h2>
             </div>
-          </div>
-
-          {/* Technologies */}
-          <div>
-            <span className="micro-label block mb-4">Filter by Technology</span>
-            <div className="flex flex-wrap gap-2">
-              {filteredTechnologies.map(tech => (
-                <button
-                  key={tech}
-                  onClick={() => toggleTechnology(tech)}
-                  className="px-4 py-2 rounded text-sm font-medium transition-all duration-300"
-                  style={{
-                    backgroundColor: selectedTechnologies.includes(tech) ? '#274553' : 'transparent',
-                    color: selectedTechnologies.includes(tech) ? '#ffffff' : '#cbd5e1',
-                    border: `1px solid ${selectedTechnologies.includes(tech) ? '#274553' : 'rgba(39, 69, 83, 0.3)'}`,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!selectedTechnologies.includes(tech)) {
-                      e.currentTarget.style.borderColor = 'rgba(39, 69, 83, 0.5)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!selectedTechnologies.includes(tech)) {
-                      e.currentTarget.style.borderColor = 'rgba(39, 69, 83, 0.3)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }
-                  }}
-                >
-                  {tech}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Projects count indicator */}
-        <div className="mb-8 flex items-center gap-3">
-          <span className="micro-label">Displaying</span>
-          <span className="text-2xl font-black" style={{ color: '#274553' }}>
-            {sortedProjects.length}
-          </span>
-          <span className="font-medium" style={{ color: '#94a3b8' }}>
-            {sortedProjects.length === 1 ? 'project' : 'projects'}
-          </span>
-        </div>
-
-        {/* Projects grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sortedProjects.map((project, index) => {
-            const colors = getProjectColor(project);
-            return (
-              <div
-                key={project.id}
-                className="group p-6 transition-all duration-500 cursor-pointer animate-fade-in-up"
-                onClick={() => setSelectedProject(project)}
-                style={{
-                  backgroundColor: colors.bg,
-                  border: `1px solid ${colors.border}`,
-                  animationDelay: `${index * 50}ms`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.borderColor = colors.accentText;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = colors.border;
-                }}
-              >
-                {/* Project number indicator */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="micro-label">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Match indicator */}
-                  {selectedTechnologies.length > 0 && (
-                    <span
-                      className="px-2 py-1 rounded text-xs font-bold"
-                      style={{
-                        backgroundColor: colors.accentBg,
-                        color: colors.accentText,
-                        fontSize: '10px',
-                      }}
-                    >
-                      {project.technologies.filter(t => selectedTechnologies.includes(t)).length}/{selectedTechnologies.length}
-                    </span>
-                  )}
-                </div>
-
-                <h3
-                  className="text-xl font-black uppercase tracking-wide mb-3"
-                  style={{ color: colors.text, lineHeight: '1.2' }}
-                >
-                  {project.title}
-                </h3>
-
-                <p className="mb-4 text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies.slice(0, 3).map(skill => (
-                    <span
-                      key={skill}
-                      className="text-xs rounded px-2 py-1 font-medium"
-                      style={{
-                        backgroundColor: colors.accentBg,
-                        color: colors.accentText,
-                        fontSize: '11px',
-                      }}
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                  {project.technologies.length > 3 && (
-                    <span
-                      className="text-xs rounded px-2 py-1 font-medium"
-                      style={{
-                        backgroundColor: colors.accentBg,
-                        color: colors.accentText,
-                        fontSize: '11px',
-                      }}
-                    >
-                      +{project.technologies.length - 3}
-                    </span>
-                  )}
-                </div>
-
-                {/* Hover arrow indicator */}
-                <div
-                  className="mt-4 pt-4 border-t flex items-center gap-2 transition-all duration-300"
-                  style={{
-                    borderColor: 'rgba(39, 69, 83, 0.2)',
-                    opacity: 0,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = 1;
-                  }}
-                >
-                  <span style={{ color: '#64748b', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    View Details
-                  </span>
-                  <span style={{ color: '#274553', fontSize: '14px', fontWeight: '900' }}>→</span>
-                </div>
+            <div style={{ textAlign: 'right' }}>
+              <div className="section-title" style={{ fontSize: 64, lineHeight: 1 }}>
+                {String(sortedProjects.length).padStart(2, '0')}
               </div>
-            );
-          })}
+              <div className="micro-label">Projects</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div style={{ borderBottom: 'var(--bar-h) solid var(--bar)', background: 'var(--bg)' }}>
+        {/* Language filters */}
+        <div style={{ borderBottom: '1px solid var(--rule)' }}>
+          <div className="container" style={{ padding: '12px 48px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span className="micro-label" style={{ marginRight: 8, flexShrink: 0 }}>Language</span>
+            <button
+              className={`filter-btn ${!selectedLanguage ? 'active' : ''}`}
+              onClick={() => { setSelectedLanguage(null); setSelectedTechnologies([]); }}
+            >
+              All
+            </button>
+            {languages.map(lang => (
+              <button
+                key={lang}
+                className={`filter-btn ${selectedLanguage === lang ? 'active' : ''}`}
+                onClick={() => toggleLanguage(lang)}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {selectedProject && <ProjectDetail project={selectedProject} onClose={() => setSelectedProject(null)} />}
+        {/* Tech filters */}
+        <div>
+          <div className="container" style={{ padding: '12px 48px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span className="micro-label" style={{ marginRight: 8, flexShrink: 0 }}>Technology</span>
+            {filteredTechnologies.map(tech => (
+              <button
+                key={tech}
+                className={`filter-btn ${selectedTechnologies.includes(tech) ? 'active' : ''}`}
+                onClick={() => toggleTech(tech)}
+              >
+                {tech}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
+
+      {/* Project rows */}
+      {sortedProjects.map((project, index) => {
+        const open = expandedId === project.id;
+        const matchState = getMatchState(project);
+        const matchCount = project.technologies.filter(t => selectedTechnologies.includes(t)).length;
+
+        return (
+          <div
+            key={project.id}
+            className={`row ${open ? 'row--expanded' : ''}`}
+          >
+            {/* Row header — clickable */}
+            <div
+              className="row__inner"
+              style={{
+                gridTemplateColumns: '48px 1fr auto auto',
+                padding: '20px 48px',
+                gap: 24,
+                cursor: 'pointer',
+                // Left colour stripe for match state
+                borderLeft: selectedTechnologies.length > 0
+                  ? `4px solid var(--match-${matchState === 'none' ? 'none' : matchState === 'full' ? 'full' : 'partial'})`
+                  : 'none',
+              }}
+              onClick={() => toggleExpand(project.id)}
+            >
+              <span className="row__num">{String(index + 1).padStart(2, '0')}</span>
+
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+                  <span className="row__title">{project.title}</span>
+
+                  {/* Match badge */}
+                  {selectedTechnologies.length > 0 && (
+                    <span className={`tag tag--match-${matchState === 'none' ? 'none' : matchState === 'full' ? 'full' : 'partial'}`}>
+                      {matchState === 'full'
+                        ? 'Full Match'
+                        : matchState === 'partial'
+                        ? `${matchCount}/${selectedTechnologies.length} Match`
+                        : 'No Match'}
+                    </span>
+                  )}
+                </div>
+                <div className="row__desc">{project.description}</div>
+              </div>
+
+              {/* Tags */}
+              <div className="row__tags">
+                {project.technologies.slice(0, 4).map(t => (
+                  <span key={t} className="tag">{t}</span>
+                ))}
+                {project.technologies.length > 4 && (
+                  <span className="tag">+{project.technologies.length - 4}</span>
+                )}
+              </div>
+
+              {/* Arrow */}
+              <span className="row__arrow">{open ? '↑' : '↓'}</span>
+            </div>
+
+            {/* Expandable detail */}
+            <div className={`row__expand-content ${open ? 'open' : ''}`}>
+              {open && <ProjectDetail project={project} />}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Bottom strip */}
+      <div style={{ borderTop: 'var(--bar-h) solid var(--bar)', background: 'var(--surface)' }}>
+        <div className="container" style={{ padding: '16px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="micro-label">{c('projects.section_description')}</span>
+          <a href="https://github.com/Micmada" target="_blank" rel="noopener noreferrer" className="btn btn--outline" style={{ padding: '8px 16px' }}>
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+
     </section>
   );
 }

@@ -2,182 +2,95 @@ import { c } from '../content.js';
 
 export default function Contact() {
   return (
-    <section
-      id="contact"
-      className="section py-24 scroll-mt-20"
-      style={{ zIndex: '1' }}
-    >
-      {/* Blueprint grid pattern */}
-      <div className="blueprint-bg blueprint-bg--section" />
+    <section id="contact" className="section" style={{ scrollMarginTop: 'var(--navbar-height)' }}>
 
-      <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-4 mb-6">
-            <span className="section-label">05. Connect</span>
-            <div className="h-px flex-1 max-w-[100px] section-divider" />
-          </div>
-
-          <h2 className="section-title font-black uppercase mb-6">
-            {c('contact.section_title_line1')}
-            <br />
-            {c('contact.section_title_line2')}
-          </h2>
-
-          <p className="section-description text-lg leading-relaxed max-w-2xl mb-4">
-            {c('contact.description')}
-          </p>
-
-          {/* Availability indicator */}
-          <div className="status-badge mt-4">
-            <span className="status-badge__dot" />
-            <span className="status-badge__text">{c('contact.availability_status')}</span>
-          </div>
+      {/* Section header */}
+      <div className="section-header section-header--bordered">
+        <div className="container">
+          <div className="micro-label" style={{ marginBottom: 12 }}>05 — Contact</div>
+          <h2 className="section-title">Contact</h2>
         </div>
+      </div>
 
-        {/* Contact grid - asymmetric 8+4 layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main contact card - 8 columns */}
-          <div className="lg:col-span-8">
-            <div className="card p-8 transition-all duration-500">
-              <span className="micro-label block mb-6">Primary Contact</span>
+      {/* Main contact row */}
+      <div className="row" style={{ cursor: 'default' }}>
+        <div className="container">
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 280px',
+              gap: 48,
+              padding: '40px 0',
+            }}
+          >
+          {/* Col 1: description + CTA */}
+          <div>
+            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Get in Touch</span>
+            <p style={{ fontSize: 15, color: 'var(--mid)', lineHeight: 1.7, marginBottom: 24 }}>
+              You can reach me at the address below.
+            </p>
+            <a href={`mailto:${c('contact.email')}`} className="btn btn--primary">
+              Send Email →
+            </a>
+          </div>
 
-              <div className="space-y-6">
-                {/* Email */}
-                <div>
-                  <label
-                    className="block text-xs font-bold uppercase tracking-[0.2em] mb-2"
-                    style={{ color: '#64748b' }}
-                  >
-                    Email Address
-                  </label>
-                  <a
-                    href={`mailto:${c('contact.email')}`}
-                    className="email-link block text-2xl font-black group"
-                  >
-                    {c('contact.email')}
-                    <span className="inline-block ml-2 transition-transform duration-300" style={{ fontSize: '20px' }}>
-                      →
-                    </span>
-                  </a>
-                </div>
-
-                {/* CTA Button */}
-                <div className="pt-4">
-                  <a
-                    href={`mailto:${c('contact.email')}`}
-                    className="btn-primary inline-flex items-center gap-3 px-8 py-4"
-                  >
-                    <span>Send Email</span>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      className="transition-transform duration-300"
-                    >
-                      <path
-                        d="M1 8h14M9 1l7 7-7 7"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* Response time note */}
-              <div className="mt-8 pt-6 border-t" style={{ borderColor: 'rgba(39, 69, 83, 0.2)' }}>
-                <div className="flex items-start gap-3">
-                  <span className="arrow-bullet" style={{ fontSize: '16px' }}>→</span>
-                  <p className="section-description text-sm leading-relaxed">
-                    {c('contact.response_note')}
-                  </p>
-                </div>
-              </div>
+          {/* Col 2: email + response note */}
+          <div>
+            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Email</span>
+            <a
+              href={`mailto:${c('contact.email')}`}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(20px, 2.5vw, 32px)',
+                letterSpacing: '0.03em',
+                color: 'var(--fg)',
+                textDecoration: 'none',
+                display: 'block',
+                marginBottom: 24,
+                lineHeight: 1.1,
+              }}
+            >
+              {c('contact.email')}
+            </a>
+            <div className="callout" style={{ marginTop: 'auto' }}>
+              <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Response Time</span>
+              <p style={{ fontSize: 13, color: 'var(--mid)' }}>Usually within 24 hours.</p>
             </div>
           </div>
 
-          {/* Sidebar info - 4 columns */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Location card */}
-            <div className="card--muted p-6">
-              <span className="micro-label block mb-3">Location</span>
-              <div className="text-2xl font-black mb-2" style={{ color: '#274553' }}>
-                {c('contact.location')}
-              </div>
-              <p className="text-sm" style={{ color: '#94a3b8' }}>
-                {c('contact.location_note')}
-              </p>
+          {/* Col 3: links + location */}
+          <div>
+            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Links</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 24 }}>
+              {[
+                { label: 'GitHub',   href: 'https://github.com/Micmada' },
+                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michael-eddleston-4867a1214/' },
+                { label: 'CV',       href: '/Michael_Eddleston_CV.pdf', download: true },
+              ].map(({ label, href, download }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={download ? undefined : '_blank'}
+                  rel={download ? undefined : 'noopener noreferrer'}
+                  download={download}
+                  className="btn btn--outline"
+                  style={{ padding: '8px 16px', justifyContent: 'space-between' }}
+                >
+                  <span>{label}</span>
+                  <span>{download ? '↓' : '↗'}</span>
+                </a>
+              ))}
             </div>
 
-            {/* Links card */}
-            <div className="card p-6">
-              <span className="micro-label block mb-4">Online Presence</span>
-
-              <div className="space-y-3">
-                <a
-                  href="https://github.com/Micmada"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="arrow-link transition-all duration-300"
-                >
-                  <span className="text-sm font-medium">GitHub</span>
-                  <span style={{ fontSize: '14px', fontWeight: '900' }}>→</span>
-                </a>
-
-                <a
-                  href="https://www.linkedin.com/in/michael-eddleston-4867a1214/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="arrow-link transition-all duration-300"
-                >
-                  <span className="text-sm font-medium">LinkedIn</span>
-                  <span style={{ fontSize: '14px', fontWeight: '900' }}>→</span>
-                </a>
-
-                <a
-                  href="/Michael_Eddleston_CV.pdf"
-                  download
-                  className="arrow-link transition-all duration-300"
-                >
-                  <span className="text-sm font-medium">CV</span>
-                  <span style={{ fontSize: '14px', fontWeight: '900' }}>→</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Interests card */}
-            <div className="card--dashed p-6">
-              <span className="micro-label block mb-3">Interests</span>
-              <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
-                {c('contact.interests')}
-              </p>
-            </div>
+            <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Location</span>
+            <p style={{ fontSize: 13, color: 'var(--mid)' }}>
+              {c('contact.location')} · {c('contact.location_note')}
+            </p>
           </div>
-        </div>
-
-        {/* Bottom callout */}
-        <div className="callout-left mt-16 p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <span className="micro-label block mb-2">Current Status</span>
-              <p className="text-base font-medium" style={{ color: '#cbd5e1' }}>
-                {c('contact.current_status')}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="status-badge__dot" />
-              <span className="text-sm font-bold" style={{ color: '#274553' }}>
-                {c('contact.status_badge')}
-              </span>
-            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 }
