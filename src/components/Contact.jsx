@@ -27,11 +27,11 @@ export default function Contact() {
           {/* Col 1: description + CTA */}
           <div>
             <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Get in Touch</span>
-            <p style={{ fontSize: 15, color: 'var(--mid)', lineHeight: 1.7, marginBottom: 24 }}>
-              You can reach me at the address below.
+            <p style={{ fontSize: 15, color: 'var(--mid)', lineHeight: 1.7, marginBottom: 24 }} data-content="contact.intro">
+              {c('contact.intro')}
             </p>
             <a href={`mailto:${c('contact.email')}`} className="btn btn--primary">
-              Send Email →
+              Send Email <span aria-hidden="true">→</span>
             </a>
           </div>
 
@@ -40,6 +40,7 @@ export default function Contact() {
             <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Email</span>
             <a
               href={`mailto:${c('contact.email')}`}
+              data-content="contact.email"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(20px, 2.5vw, 32px)',
@@ -55,7 +56,7 @@ export default function Contact() {
             </a>
             <div className="callout" style={{ marginTop: 'auto' }}>
               <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Response Time</span>
-              <p style={{ fontSize: 13, color: 'var(--mid)' }}>Usually within 24 hours.</p>
+              <p style={{ fontSize: 13, color: 'var(--mid)' }} data-content="contact.response_time">{c('contact.response_time')}</p>
             </div>
           </div>
 
@@ -78,14 +79,14 @@ export default function Contact() {
                   style={{ padding: '8px 16px', justifyContent: 'space-between' }}
                 >
                   <span>{label}</span>
-                  <span>{download ? '↓' : '↗'}</span>
+                  <span aria-hidden="true">{download ? '↓' : '↗'}</span>
                 </a>
               ))}
             </div>
 
             <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Location</span>
             <p style={{ fontSize: 13, color: 'var(--mid)' }}>
-              {c('contact.location')} · {c('contact.location_note')}
+              <span data-content="contact.location">{c('contact.location')}</span> · <span data-content="contact.location_note">{c('contact.location_note')}</span>
             </p>
           </div>
           </div>

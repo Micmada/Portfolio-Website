@@ -4,13 +4,27 @@ import { c } from '../content.js';
 const EXPERIENCES = [
   {
     num: '01',
+    company: 'Re-site',
+    role: 'Co-Founder & Lead Developer',
+    period: 'Mar 2026 – Present',
+    type: 'CO-FOUNDER',
+    location: 'Milton Keynes, UK',
+    descriptionKey: 'experience.resite_description',
+    bullets: [
+      'Architected Pantheon, a proprietary backend management platform with schema-driven module architecture and per-client CNAME subdomain deployment.',
+      'Designed modular platform architecture with independently deployable routes and schema-driven client configuration.',
+      'Currently delivering first client project: full-stack React/PostgreSQL portfolio and e-commerce site.',
+    ],
+    technologies: ['React', 'PostgreSQL', 'Platform Architecture'],
+  },
+  {
+    num: '02',
     company: 'ARM Holdings',
     role: 'Software Engineering Intern',
     period: 'Jun 2023 – Mar 2025',
-    duration: '14 months',
     type: 'INTERNSHIP',
     location: 'Cambridge, UK',
-    description: c('experience.description'),
+    descriptionKey: 'experience.description',
     bullets: [
       'Architected Python automation system replacing legacy documentation pipeline — reduced processing time from ~1 week to under 24 hours for 20,000+ page technical specifications.',
       'Debugged and resolved critical production issues in senior engineers\' code, maintaining stability for enterprise-scale documentation workflows.',
@@ -23,7 +37,7 @@ const EXPERIENCES = [
 
 const EDUCATION = [
   {
-    num: '02',
+    num: '03',
     institution: 'University of Winchester',
     qualification: 'BSc Software Engineering',
     grade: '2:1 Honours',
@@ -49,39 +63,50 @@ export default function Experience() {
       {/* Experience rows */}
       {EXPERIENCES.map((exp, i) => {
         const open = expandedIdx === i;
+        const panelId = `experience-panel-${i}`;
         return (
-          <div key={i} className={`row ${open ? 'row--expanded' : ''}`} style={{ cursor: 'pointer' }}>
+          <div key={exp.company} className={`row ${open ? 'row--expanded' : ''}`}>
 
             {/* Collapsed row */}
-            <div
-              className="row__inner exp-row__inner"
-              onClick={() => setExpandedIdx(open ? null : i)}
-            >
-              <span className="row__num">{exp.num}</span>
+            <h3 style={{ margin: 0 }}>
+              <button
+                type="button"
+                className="row__inner row__toggle exp-row__inner"
+                onClick={() => setExpandedIdx(open ? null : i)}
+                aria-expanded={open}
+                aria-controls={panelId}
+              >
+                <span className="row__num">{exp.num}</span>
 
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                  <span className="row__title">{exp.company}</span>
-                  <span className="exp-row__badge">{exp.type}</span>
-                </div>
-                <div className="row__desc">{exp.role} · {exp.location} · {exp.period}</div>
-              </div>
+                <span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+                    <span className="row__title">{exp.company}</span>
+                    <span className="exp-row__badge">{exp.type}</span>
+                  </span>
+                  <span className="row__desc" style={{ display: 'block' }}>{exp.role} · {exp.location} · {exp.period}</span>
+                </span>
 
-              {/* Tags — desktop only */}
-              <div className="row__tags" style={{ gap: 6 }}>
-                {exp.technologies.slice(0, 4).map(t => <span key={t} className="tag">{t}</span>)}
-              </div>
+                {/* Tags — desktop only */}
+                <span className="row__tags" style={{ gap: 6 }}>
+                  {exp.technologies.slice(0, 4).map(t => <span key={t} className="tag">{t}</span>)}
+                </span>
 
-              <span className="row__arrow">{open ? '↑' : '↓'}</span>
-            </div>
+                <span className="row__arrow" aria-hidden="true">{open ? '↑' : '↓'}</span>
+              </button>
+            </h3>
 
             {/* Expanded content */}
-            <div className={`row__expand-content ${open ? 'open' : ''}`}>
+            <div
+              id={panelId}
+              className={`row__expand-content ${open ? 'open' : ''}`}
+              inert={!open}
+            >
+              <div className="row__expand-clip">
               <div className="row__expand-inner">
 
                 {/* Description */}
-                <p style={{ fontSize: 14, color: 'var(--mid)', lineHeight: 1.7, maxWidth: 720, marginBottom: 32 }}>
-                  {exp.description}
+                <p style={{ fontSize: 14, color: 'var(--mid)', lineHeight: 1.7, maxWidth: 720, marginBottom: 32 }} data-content={exp.descriptionKey}>
+                  {c(exp.descriptionKey)}
                 </p>
 
                 {/* Bullets */}
@@ -90,7 +115,7 @@ export default function Experience() {
                   <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {exp.bullets.map((b, bi) => (
                       <li key={bi} style={{ display: 'flex', gap: 12, fontSize: 13, color: 'var(--fg)', lineHeight: 1.6 }}>
-                        <span style={{ color: 'var(--mid)', flexShrink: 0 }}>→</span>
+                        <span style={{ color: 'var(--mid)', flexShrink: 0 }} aria-hidden="true">→</span>
                         {b}
                       </li>
                     ))}
@@ -105,20 +130,21 @@ export default function Experience() {
                   </div>
                 </div>
               </div>
+              </div>
             </div>
           </div>
         );
       })}
 
       {/* Education rows */}
-      {EDUCATION.map((edu, i) => (
-        <div key={i} className="row">
+      {EDUCATION.map(edu => (
+        <div key={edu.institution} className="row">
           <div className="row__inner exp-row__inner">
             <span className="row__num">{edu.num}</span>
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                <span className="row__title">{edu.institution}</span>
+                <h3 className="row__title" style={{ fontWeight: 'inherit' }}>{edu.institution}</h3>
                 <span className="exp-row__badge">EDUCATION</span>
               </div>
               <div className="row__desc">
@@ -126,15 +152,13 @@ export default function Experience() {
               </div>
               <div className="micro-label" style={{ marginTop: 6 }}>{edu.note}</div>
             </div>
-
-            <span className="row__arrow" style={{ cursor: 'default' }} />
           </div>
         </div>
       ))}
 
       {/* Summary strip */}
       <div style={{ borderTop: 'var(--bar-h) solid var(--bar)', background: 'var(--surface)' }}>
-        <div className="container" style={{ padding: '20px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="container" style={{ paddingBlock: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span className="micro-label">BSc Software Engineering · University of Winchester · 2:1</span>
         </div>
       </div>

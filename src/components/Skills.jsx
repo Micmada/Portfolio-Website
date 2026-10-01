@@ -1,15 +1,15 @@
-import { c } from '../content.js';
+import { c, list } from '../content.js';
 
-const SKILLS = {
-  Languages:                  ['Python', 'JavaScript', 'TypeScript', 'Go', 'SQL', 'HTML/CSS'],
-  'Frameworks & Libraries':   ['React', 'React Native', 'Node.js', 'Express', 'Flask', 'Django', 'Tailwind CSS', 'Prisma ORM'],
-  'Tools & Platforms':        ['Git / GitHub', 'PostgreSQL', 'MongoDB', 'Jenkins', 'Gerrit', 'Docker', 'AWS', 'Streamlit'],
-  'Methodologies':            ['RESTful API Design', 'OOP', 'Test-Driven Dev', 'CI/CD Pipelines', 'Agile / Scrum', 'System Architecture', 'Data Modeling'],
-};
+const CATEGORIES = [
+  { label: 'Languages',              key: 'skills.languages' },
+  { label: 'Frameworks & Libraries', key: 'skills.frameworks' },
+  { label: 'Tools & Platforms',      key: 'skills.tools' },
+  { label: 'Methodologies',          key: 'skills.methodologies' },
+];
 
 export default function Skills() {
-  const entries = Object.entries(SKILLS);
-  const total = Object.values(SKILLS).flat().length;
+  const entries = CATEGORIES.map(({ label, key }) => [label, list(key), key]);
+  const total = entries.reduce((n, [, items]) => n + items.length, 0);
 
   return (
     <section id="skills" className="section" style={{ scrollMarginTop: 'var(--navbar-height)' }}>
@@ -23,9 +23,9 @@ export default function Skills() {
       </div>
 
       {/* Skill rows */}
-      {entries.map(([category, items], i) => (
+      {entries.map(([category, items, key], i) => (
         <div className="row" key={category}>
-          <div className="row__inner skills-row__inner" style={{ gridTemplateColumns: '48px 240px 1fr auto', padding: '22px 48px' }}>
+          <div className="row__inner skills-row__inner">
             {/* Number */}
             <span className="row__num">0{i + 1}</span>
 
@@ -37,20 +37,20 @@ export default function Skills() {
             </div>
 
             {/* Tags */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }} data-content={key}>
               {items.map(s => <span key={s} className="tag">{s}</span>)}
             </div>
 
             {/* Count */}
-            <span className="micro-label skills-row__count">{items.length}</span>
+            <span className="micro-label skills-row__count" aria-label={`${items.length} skills`}>{items.length}</span>
           </div>
         </div>
       ))}
 
       {/* Summary strip */}
       <div style={{ borderTop: 'var(--bar-h) solid var(--bar)', background: 'var(--surface)' }}>
-        <div className="container" style={{ padding: '20px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p style={{ fontSize: 13, color: 'var(--mid)', maxWidth: 560 }}>
+        <div className="container" style={{ paddingBlock: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ fontSize: 13, color: 'var(--mid)', maxWidth: 560 }} data-content="skills.core_competency">
           {c('skills.core_competency')}
         </p>
         <div style={{ textAlign: 'right' }}>

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap');
 
 /* ===================================================
    GLOBAL STYLESHEET
@@ -15,8 +14,8 @@
   --bg:           #F5F4F0;
   --bg-alt:       #ECEAE6;
   --fg:           #0A0A0A;
-  --mid:          #787672;
-  --faint:        #C2C0BB;
+  --mid:          #55534F;
+  --faint:        #65635F;
   --bar:          #0A0A0A;
   --btn-bg:       #0A0A0A;
   --btn-fg:       #F5F4F0;
@@ -38,7 +37,7 @@
 
   /* Typography */
   --font-display: 'Bebas Neue', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
+  --font-body:    'DM Sans Variable', 'DM Sans', sans-serif;
   --font-mono:    'DM Mono', monospace;
 
   /* Bar height */
@@ -53,7 +52,7 @@
   --bg-alt:       #1A1917;
   --fg:           #F0EEE8;
   --mid:          #B8B6B0;
-  --faint:        #6B6A66;
+  --faint:        #97958F;
   --bar:          #F0EEE8;
   --btn-bg:       #F0EEE8;
   --btn-fg:       #121110;
@@ -97,6 +96,38 @@
 html {
   background-color: var(--bg);
   scroll-behavior: smooth;
+  scroll-padding-top: var(--navbar-height);
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+}
+
+.skip-link:focus { top: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
@@ -491,6 +522,20 @@ body {
   margin: 0 auto;
 }
 
+.row__toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row__toggle:focus-visible {
+  outline-offset: -4px;
+}
+
 .row__num {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -539,13 +584,18 @@ body {
 }
 
 .row__expand-content {
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .row__expand-content.open {
-  max-height: 1200px;
+  grid-template-rows: 1fr;
+}
+
+.row__expand-clip {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .row__expand-inner {
@@ -633,6 +683,10 @@ body {
 /* --------------------------------------------------
    Project detail expand
    -------------------------------------------------- */
+.project-detail {
+  padding-left: 48px;
+}
+
 .project-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 280px;
@@ -780,9 +834,19 @@ body {
 
 
 /* --------------------------------------------------
+   Skills specific
+   -------------------------------------------------- */
+.skills-row__inner {
+  grid-template-columns: 48px 240px 1fr auto;
+  padding: 22px 48px;
+}
+
+
+/* --------------------------------------------------
    Experience specific
    -------------------------------------------------- */
-.exp-row__inner {
+.exp-row__inner,
+.project-row__inner {
   grid-template-columns: 48px 1fr auto auto;
   padding: 20px 48px;
   gap: 24px;
@@ -918,6 +982,29 @@ body {
 
 
 /* --------------------------------------------------
+   Hero
+   -------------------------------------------------- */
+.hero-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-specs {
+  position: absolute;
+  top: 80px;
+  right: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: right;
+}
+
+@media (max-width: 1023px) {
+  .hero-specs { display: none; }
+}
+
+
+/* --------------------------------------------------
    Monogram
    -------------------------------------------------- */
 .monogram {
@@ -996,9 +1083,11 @@ body.project-open {
   .row__num  { display: none; }
   .row__tags { display: none; }
   .row__expand-inner { padding: 20px; }
+  .project-detail { padding-left: 20px; }
 
   /* Experience rows — stack on mobile */
-  .exp-row__inner {
+  .exp-row__inner,
+  .project-row__inner {
     grid-template-columns: 1fr auto !important;
     padding: 16px 20px !important;
     gap: 12px !important;

@@ -1,16 +1,14 @@
 ---
 description: Personal portfolio website showcasing projects and skills with live GitHub integration
 details: >
-  A modern, responsive portfolio built with React and Tailwind CSS featuring
-  real-time GitHub API integration for project data, commits, and README
-  content. Includes interactive project filtering by technology stack, detailed
-  modal views with live site links and repository information, smooth CSS
-  transitions and animations, and comprehensive accessibility features with
-  keyboard navigation. The site displays a skills grid, project showcase with
-  color-coded filters, contact information, and a hero section with smooth
-  scrolling effects. Designed with mobile-first responsiveness and enhanced UX
-  through hover effects and Tailwind transitions. Hosted on AWS Amplify for
-  continuous deployment and fast global delivery.
+  A modern, responsive portfolio built with React, Vite and Tailwind CSS,
+  featuring live project data from an AWS API and GitHub integration for
+  recent commits. Includes interactive project filtering by language and
+  technology stack, expandable project rows with live site and repository
+  links, light and dark themes, and accessibility features including keyboard
+  navigation, visible focus states and reduced-motion support. Site copy is
+  editable through the Pantheon CMS. Hosted on AWS Amplify for continuous
+  deployment and fast global delivery.
 technologies:
   - react
   - tailwind
@@ -20,38 +18,44 @@ hostedUrl: https://michaeleddleston.com
 ---
 # Portfolio Website
 
-A personal portfolio website built with **React** and **Tailwind CSS** to showcase projects, skills, and contact information. Features a responsive design, project filtering, GitHub integration, and accessibility enhancements.
+A personal portfolio website built with **React**, **Vite** and **Tailwind CSS** to showcase projects, experience, skills, and contact information. Features a responsive editorial design, light/dark themes, project filtering, live GitHub data, and accessibility enhancements.
 
 ---
 
 ## Features
 
-- **Responsive Layout**: Works seamlessly on desktop and mobile devices.  
-- **Project Filtering**: Filter projects by skills such as React, Node.js, Tailwind, and TypeScript.  
-- **Detailed Project Views**: View live sites, GitHub repositories, recent commits, and README content directly.  
-- **Accessibility Improvements**: Interactive elements (buttons, filters, links) are clearly selectable and keyboard-navigable.  
-- **Clean & Modern UI**: Smooth scrolling, hover effects, and color-coded project filters for better UX.  
+- **Responsive Layout**: Works seamlessly on desktop and mobile devices.
+- **Project Filtering**: Filter projects by language and technology, with full/partial match highlighting.
+- **Expandable Project Rows**: Overview, stack, live site and repository links, and recent commits pulled from GitHub.
+- **Light/Dark Themes**: Follows the system setting by default; an explicit choice is remembered.
+- **Accessibility**: Keyboard-operable rows and filters, visible focus styles, skip link, WCAG AA text contrast, and reduced-motion support.
+- **SEO & Social Previews**: Static meta tags, Open Graph/Twitter cards, and JSON-LD in `index.html`.
+- **Editable Content**: Site copy lives in `content/pantheon.content.json` and is editable through the Pantheon CMS.
 
 ---
 
 ## Technologies Used
 
-- **Frontend**: React, Tailwind CSS, JavaScript (ES6+)
-- **APIs**: GitHub API for repository details and commits
-- **Animations & Effects**: Framer Motion, Tailwind transitions
+- **Frontend**: React, Vite, Tailwind CSS, JavaScript (ES6+)
+- **Fonts**: Bebas Neue, DM Sans, DM Mono (self-hosted via Fontsource)
+- **APIs**: AWS API Gateway (project data), GitHub REST API (push dates and commits, cached client-side)
+- **Hosting**: AWS Amplify
 
 ---
 
 ## Project Structure
 
-- `src/components/Navbar.jsx` - Navigation bar with scroll effects
-- `src/components/Hero.jsx` - Hero section with introduction and CTA
-- `src/components/Skills.jsx` - Skills grid
-- `src/components/Projects.jsx` - Projects grid with filtering and modal details
-- `src/components/Contact.jsx` - Contact section with email link
-- `src/components/Footer.jsx` - Footer with copyright
-- `src/index.css` - Tailwind and typography plugin
-- `src/main.jsx` - Entry point with ReactDOM
+- `index.html` - SEO/social meta tags, JSON-LD, and the pre-paint theme script
+- `src/components/Navbar.jsx` - Navigation bar, theme toggle, and mobile menu
+- `src/components/Hero.jsx` - Hero section with introduction and CTAs
+- `src/components/Skills.jsx` - Skills rows
+- `src/components/Experience.jsx` - Work and education rows
+- `src/components/Projects.jsx` - Projects list with filtering and expandable details
+- `src/components/Contact.jsx` - Contact section
+- `src/components/Footer.jsx` - Footer links and copyright
+- `src/content.js` - Helpers for reading `content/pantheon.content.json`
+- `src/global.css` - Design tokens and all component styles
+- `pantheon/` - Pantheon CMS field definitions (each field targets a `[data-content="key"]` element)
 
 ---
 
@@ -59,8 +63,8 @@ A personal portfolio website built with **React** and **Tailwind CSS** to showca
 
 ### Prerequisites
 
-- **Node.js** (v14 or later recommended)
-- **npm** or **yarn**
+- **Node.js** 20.19+ (or 22.12+)
+- **npm**
 
 ### Installation
 
@@ -71,11 +75,9 @@ cd Portfolio-Website
 
 # Install dependencies
 npm install
-# or
-yarn install
 
 # Start development server
 npm run dev
-# or
-yarn dev
 ```
+
+Note: the projects API only allows requests from the production origin (CORS), so the Projects section shows its error state when run locally.

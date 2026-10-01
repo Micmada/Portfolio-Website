@@ -7,8 +7,8 @@ export default function Footer() {
 
         {/* Left */}
         <div>
-          <div className="footer__logo">{c('footer.name')}</div>
-          <ul className="footer__links">
+          <div className="footer__logo" data-content="footer.name">{c('footer.name')}</div>
+          <ul className="footer__links" aria-label="Footer">
             {[
               { label: 'Skills',      href: '#skills' },
               { label: 'Experience',  href: '#experience' },
@@ -21,13 +21,14 @@ export default function Footer() {
             ))}
           </ul>
           <div className="footer__copy">
-            © {new Date().getFullYear()} {c('footer.name')} · Built with {c('footer.built_with')}
+            © {new Date().getFullYear()} {c('footer.name')} · Built with <span data-content="footer.built_with">{c('footer.built_with')}</span>
           </div>
           <button
+            type="button"
             className="back-to-top"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => window.scrollTo({ top: 0 })}
           >
-            ↑ Back to Top
+            <span aria-hidden="true">↑</span> Back to Top
           </button>
         </div>
 
@@ -47,7 +48,7 @@ export default function Footer() {
               className="footer__connect-link"
             >
               <span>{label}</span>
-              <span>{ext ? '↗' : '→'}</span>
+              <span aria-hidden="true">{ext ? '↗' : '→'}</span>
             </a>
           ))}
         </div>

@@ -6,18 +6,15 @@ import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
-import SEO from "./components/SEO";
-import SchemaMarkup from "./components/SchemaMarkup";
 
 export default function App() {
   const [projectOpen, setProjectOpen] = useState(false);
 
   return (
     <>
-      <SEO />
-      <SchemaMarkup />
+      <a href="#main" className="skip-link">Skip to content</a>
       <Navbar projectOpen={projectOpen} />
-      <main style={{ paddingTop: 'var(--navbar-height)' }}>
+      <main id="main" style={{ paddingTop: 'var(--navbar-height)' }}>
         <Hero />
         <Skills />
         <Experience />

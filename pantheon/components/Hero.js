@@ -1,67 +1,56 @@
 export default {
-  'hero.status': {
-    label: 'Availability Status',
+  'hero.tagline': {
+    label: 'Tagline',
     type: 'text',
-    selector: '.status-badge .status-badge__text',
-    hint: 'Short status shown in the pill badge at the top of the page, e.g. "Available for Opportunities"',
+    selector: '[data-content="hero.tagline"]',
+    hint: 'Small label above the name, e.g. "Software Engineer · Milton Keynes, UK"',
   },
 
   'hero.name': {
     label: 'Name (line 1)',
     type: 'text',
-    selector: '.section-title--hero',
-    hint: 'The heading is split across two lines by a <br />. This field controls the first line only (e.g. "Michael"). Edit the second line in hero.name_line2.',
+    selector: '[data-content="hero.name"]',
+    hint: 'First line of the large name heading, e.g. "Michael"',
   },
 
   'hero.name_line2': {
     label: 'Name (line 2)',
     type: 'text',
-    selector: '.section-title--hero',
-    hint: 'Second line of the large name heading (e.g. "Eddleston"). Shown below the first line at the same scale.',
-  },
-
-  'hero.role_primary': {
-    label: 'Primary Role Title',
-    type: 'text',
-    selector: 'h2 .role-primary',
-    hint: 'Text shown before the "/" separator in the subtitle, e.g. "Software Engineer"',
-  },
-
-  'hero.role_secondary': {
-    label: 'Secondary Role Title',
-    type: 'text',
-    selector: 'h2 .role-secondary',
-    hint: 'Text shown after the "/" separator in the subtitle, e.g. "Full-Stack Developer"',
-  },
-
-  'hero.description': {
-    label: 'Introduction Paragraph',
-    type: 'text',
-    selector: '.section-description',
+    selector: '[data-content="hero.name_line2"]',
+    hint: 'Second line of the large name heading, e.g. "Eddleston"',
   },
 
   'hero.spec_location': {
     label: 'Location',
     type: 'text',
-    selector: '.spec-callout .spec-value--location',
-    hint: 'Shown in the small specifications panel in the bottom-right corner of the hero (desktop only)',
+    selector: '[data-content="hero.spec_location"]',
+    hint: 'Small label top-right of the hero (desktop only), e.g. "UK-Based"',
   },
 
   'hero.spec_experience': {
     label: 'Experience Summary',
     type: 'text',
-    selector: '.spec-callout .spec-value--experience',
-    hint: 'Brief experience descriptor shown in the specs panel, e.g. "14mo+ Industry"',
+    selector: '[data-content="hero.spec_experience"]',
+    hint: 'Small label top-right of the hero (desktop only), e.g. "14mo+ Industry"',
   },
 
-  'hero.spec_status': {
-    label: 'Status',
+  'hero.description': {
+    label: 'About Paragraph',
     type: 'text',
-    selector: '.spec-callout .spec-value--accent',
-    hint: 'Status shown in the spec panel, e.g. "Active"',
-    ui: {
-      maxLength: 20,
-      placeholder: 'Active',
-    }
+    selector: '[data-content="hero.description"]',
+  },
+
+  'hero.core_stack': {
+    label: 'Core Stack',
+    type: 'text',
+    selector: '[data-content="hero.core_stack"]',
+    hint: 'Comma-separated list shown as tags, e.g. "Python, TypeScript, React"',
+  },
+
+  'hero.strip': {
+    label: 'Bottom Strip',
+    type: 'text',
+    selector: '[data-content="hero.strip"]',
+    hint: 'Small label in the strip at the bottom of the hero, e.g. "Re-site · Pantheon · ARM"',
   },
 };

@@ -1,10 +1,87 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Michael Eddleston</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Static SEO tags: social scrapers don't run JS, so these must live in the HTML -->
+    <title>Michael Eddleston | Software Engineer & Web Developer</title>
+    <meta name="description" content="Software Engineer specialising in React, TypeScript, and Python. Previously at ARM, now co-founder of Re-site. Building bespoke web solutions in Milton Keynes, UK." />
+    <meta name="author" content="Michael Eddleston" />
+    <link rel="canonical" href="https://michaeleddleston.com/" />
+    <meta name="theme-color" content="#F5F4F0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://michaeleddleston.com/" />
+    <meta property="og:title" content="Michael Eddleston | Software Engineer & Web Developer" />
+    <meta property="og:description" content="Software Engineer specialising in React, TypeScript, and Python. Previously at ARM." />
+    <meta property="og:image" content="https://michaeleddleston.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Michael Eddleston — Software Engineer, Milton Keynes, UK" />
+    <meta property="og:site_name" content="Michael Eddleston Portfolio" />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Michael Eddleston | Software Engineer & Web Developer" />
+    <meta name="twitter:description" content="Software Engineer specialising in Python, React and TypeScript. Previously at ARM." />
+    <meta name="twitter:image" content="https://michaeleddleston.com/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Michael Eddleston — Software Engineer, Milton Keynes, UK" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Michael Eddleston",
+        "jobTitle": "Software Engineer",
+        "description": "Software Engineer specialising in React, TypeScript, and Python. Previously at ARM.",
+        "url": "https://michaeleddleston.com/",
+        "image": "https://michaeleddleston.com/og-image.jpg",
+        "sameAs": [
+          "https://www.linkedin.com/in/michael-eddleston-4867a1214/",
+          "https://github.com/Micmada"
+        ],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Winchester"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Re-site"
+        },
+        "knowsAbout": [
+          "Software Engineering",
+          "Web Development",
+          "React",
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "Node.js",
+          "Full Stack Development"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Milton Keynes",
+          "addressCountry": "GB"
+        }
+      }
+    </script>
+
+    <!-- Apply theme before first paint to avoid a light flash for dark-mode users -->
+    <script>
+      (function () {
+        var theme;
+        try { theme = localStorage.getItem('theme'); } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
