@@ -9,6 +9,7 @@ const EXPERIENCES = [
     period: 'Mar 2026 – Present',
     type: 'CO-FOUNDER',
     location: 'Milton Keynes, UK',
+    url: 'https://page-flow.co.uk',
     descriptionKey: 'experience.pageflow_description',
     bullets: [
       'Architected Pantheon, a multi-tenant site management platform: one sign-in where a client edits page content, manages portfolio projects, works through website enquiries, and tracks their build and invoices.',
@@ -108,9 +109,21 @@ export default function Experience() {
               <div className="row__expand-inner">
 
                 {/* Description */}
-                <p style={{ fontSize: 14, color: 'var(--mid)', lineHeight: 1.7, maxWidth: 720, marginBottom: 32 }} data-content={exp.descriptionKey}>
+                <p style={{ fontSize: 14, color: 'var(--mid)', lineHeight: 1.7, maxWidth: 720, marginBottom: exp.url ? 20 : 32 }} data-content={exp.descriptionKey}>
                   {c(exp.descriptionKey)}
                 </p>
+
+                {exp.url && (
+                  <a
+                    href={exp.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn--primary"
+                    style={{ marginBottom: 32 }}
+                  >
+                    Visit {exp.company} <span aria-hidden="true">↗</span>
+                  </a>
+                )}
 
                 {/* Bullets */}
                 <div style={{ marginBottom: 32 }}>
