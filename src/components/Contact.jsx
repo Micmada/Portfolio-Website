@@ -1,98 +1,38 @@
-import { c } from '../content.js';
+import { c, CV_HREF } from '../content.js';
+
+const LINKS = [
+  { label: 'GitHub',      href: 'https://github.com/Micmada' },
+  { label: 'LinkedIn',    href: 'https://www.linkedin.com/in/michael-eddleston-4867a1214/' },
+  { label: 'page-flow',   href: 'https://page-flow.co.uk' },
+  { label: 'Download CV', href: CV_HREF, download: true },
+];
 
 export default function Contact() {
+  const email = c('contact.email');
+  const [user, domain] = email.split('@');
+
   return (
-    <section id="contact" className="section" style={{ scrollMarginTop: 'var(--navbar-height)' }}>
-
-      {/* Section header */}
-      <div className="section-header section-header--bordered">
-        <div className="container">
-          <div className="micro-label" style={{ marginBottom: 12 }}>05 — Contact</div>
-          <h2 className="section-title">Contact</h2>
-        </div>
+    <section id="contact" className="section" aria-labelledby="contact-heading">
+      <div className="container contact__inner">
+        <h2 id="contact-heading" className="sr-only">Contact</h2>
+        <a href={`mailto:${email}`} className="display contact__email" data-content="contact.email">
+          {user}<span className="contact__at">@</span>{domain}
+        </a>
+        <ul className="contact__links">
+          {LINKS.map(({ label, href, download }) => (
+            <li key={label}>
+              <a
+                href={href}
+                download={download || undefined}
+                target={download ? undefined : '_blank'}
+                rel={download ? undefined : 'noopener noreferrer'}
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-
-      {/* Main contact row */}
-      <div className="row" style={{ cursor: 'default' }}>
-        <div className="container">
-          <div
-            className="contact-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 280px',
-              gap: 48,
-              padding: '40px 0',
-            }}
-          >
-          {/* Col 1: description + CTA */}
-          <div>
-            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Get in Touch</span>
-            <p style={{ fontSize: 15, color: 'var(--mid)', lineHeight: 1.7, marginBottom: 24 }} data-content="contact.intro">
-              {c('contact.intro')}
-            </p>
-            <a href={`mailto:${c('contact.email')}`} className="btn btn--primary">
-              Send Email <span aria-hidden="true">→</span>
-            </a>
-          </div>
-
-          {/* Col 2: email + response note */}
-          <div>
-            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Email</span>
-            <a
-              href={`mailto:${c('contact.email')}`}
-              data-content="contact.email"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(20px, 2.5vw, 32px)',
-                letterSpacing: '0.03em',
-                color: 'var(--fg)',
-                textDecoration: 'none',
-                display: 'block',
-                marginBottom: 24,
-                lineHeight: 1.1,
-              }}
-            >
-              {c('contact.email')}
-            </a>
-            <div className="callout" style={{ marginTop: 'auto' }}>
-              <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Response Time</span>
-              <p style={{ fontSize: 13, color: 'var(--mid)' }} data-content="contact.response_time">{c('contact.response_time')}</p>
-            </div>
-          </div>
-
-          {/* Col 3: links + location */}
-          <div>
-            <span className="micro-label" style={{ display: 'block', marginBottom: 12 }}>Links</span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 24 }}>
-              {[
-                { label: 'GitHub',   href: 'https://github.com/Micmada' },
-                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michael-eddleston-4867a1214/' },
-                { label: 'CV',       href: '/Michael_Eddleston_CV.pdf', download: true },
-              ].map(({ label, href, download }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target={download ? undefined : '_blank'}
-                  rel={download ? undefined : 'noopener noreferrer'}
-                  download={download}
-                  className="btn btn--outline"
-                  style={{ padding: '8px 16px', justifyContent: 'space-between' }}
-                >
-                  <span>{label}</span>
-                  <span aria-hidden="true">{download ? '↓' : '↗'}</span>
-                </a>
-              ))}
-            </div>
-
-            <span className="micro-label" style={{ display: 'block', marginBottom: 6 }}>Location</span>
-            <p style={{ fontSize: 13, color: 'var(--mid)' }}>
-              <span data-content="contact.location">{c('contact.location')}</span> · <span data-content="contact.location_note">{c('contact.location_note')}</span>
-            </p>
-          </div>
-          </div>
-        </div>
-      </div>
-
     </section>
   );
 }

@@ -1,110 +1,70 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { c } from '../content.js';
 
+const LINKS = [
+  { label: 'Work',       href: '#work' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Contact',    href: '#contact' },
+];
+
 function initialTheme() {
-  // index.html sets data-theme before first paint (stored choice or system preference)
-  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  // index.html sets data-theme before first paint (stored choice, else dark)
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
 }
 
-export default function Navbar({ projectOpen = false }) {
+export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState(initialTheme);
-  const navRef = useRef(null);
 
-  // Apply theme to root element
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  const nextTheme = theme === 'dark' ? 'light' : 'dark';
+
   const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    // Only persist an explicit choice, so visitors otherwise follow their system setting
-    try { localStorage.setItem('theme', next); } catch { /* storage unavailable */ }
+    setTheme(nextTheme);
+    try { localStorage.setItem('theme', nextTheme); } catch { /* storage unavailable */ }
   };
 
-  // Set CSS variable for navbar height
-  useEffect(() => {
-    if (navRef.current) {
-      document.documentElement.style.setProperty(
-        '--navbar-height',
-        `${navRef.current.offsetHeight}px`
-      );
-    }
-  }, [menuOpen]);
-
-  // Close mobile menu when project opens
-  useEffect(() => {
-    if (projectOpen && menuOpen) setMenuOpen(false);
-  }, [projectOpen, menuOpen]);
-
-  const links = [
-    { label: 'Skills',      num: '02', href: '#skills' },
-    { label: 'Experience',  num: '03', href: '#experience' },
-    { label: 'Projects',    num: '04', href: '#projects' },
-    { label: 'Contact',     num: '05', href: '#contact' },
-  ];
-
-  const nextTheme = theme === 'light' ? 'dark' : 'light';
-
   return (
-    <nav ref={navRef} className="nav" aria-label="Main">
-      <div className="nav__inner">
-
-        {/* Logo */}
-        <a href="#" className="nav__logo" data-content="navbar.brand_name">
+    <nav className="nav" aria-label="Main">
+      <div className="container nav__inner">
+        <a href="#top" className="nav__logo" data-content="navbar.brand_name">
           {c('navbar.brand_name')}
         </a>
 
-        {/* Desktop links */}
-        <ul className="nav__links">
-          {links.map(({ label, num, href }) => (
-            <li key={label}>
-              <a href={href} className="nav__link">
-                <span style={{ color: 'var(--faint)', marginRight: 6 }} aria-hidden="true">{num}</span>
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="nav__right">
+          <ul className="nav__links">
+            {LINKS.map(({ label, href }) => (
+              <li key={label}><a href={href} className="nav__link">{label}</a></li>
+            ))}
+          </ul>
 
-        {/* Actions */}
-        <div className="nav__actions">
-          {/* Theme toggle */}
           <button
             type="button"
             className="theme-toggle"
             onClick={toggleTheme}
             aria-label={`Switch to ${nextTheme} theme`}
-            title={`Switch to ${nextTheme} theme`}
           >
-            <span aria-hidden="true">{theme === 'light' ? '◐' : '◑'}</span>
+            {nextTheme === 'light' ? 'Light' : 'Dark'}
           </button>
 
-          {/* Hamburger */}
           <button
             type="button"
-            className={`nav__hamburger ${menuOpen ? 'open' : ''}`}
+            className="nav__menu-btn"
             onClick={() => setMenuOpen(m => !m)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
           >
-            <span /><span /><span />
+            {menuOpen ? 'Close' : 'Menu'}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div id="mobile-menu" className={`nav__mobile ${menuOpen ? 'open' : ''}`}>
-        {links.map(({ label, num, href }) => (
-          <a
-            key={label}
-            href={href}
-            className="nav__mobile-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            <span className="num" aria-hidden="true">{num}</span>
+        {LINKS.map(({ label, href }) => (
+          <a key={label} href={href} className="nav__mobile-link" onClick={() => setMenuOpen(false)}>
             {label}
           </a>
         ))}

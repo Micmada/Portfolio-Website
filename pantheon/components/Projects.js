@@ -1,8 +1,15 @@
 export default {
-  'projects.section_description': {
-    label: 'Section Description',
+  'pantheon.description': {
+    label: 'Pantheon description',
     type: 'text',
-    selector: '[data-content="projects.section_description"]',
-    hint: 'Shown in the strip below the project list. Project data itself is managed via the AWS API.',
+    selector: '[data-content="pantheon.description"]',
+    hint: 'Short paragraph under the Pantheon heading',
+  },
+
+  'pantheon.status': {
+    label: 'Pantheon status',
+    type: 'text',
+    selector: '[data-content="pantheon.status"]',
+    hint: 'Small note under the numbers, e.g. "Built and tested locally. Deployment is next."',
   },
 };

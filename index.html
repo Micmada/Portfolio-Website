@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href="/images/pageflow-home-1600.jpg" imagesrcset="/images/pageflow-home-900.jpg 900w, /images/pageflow-home-1600.jpg 1600w" imagesizes="(max-width: 767px) 100vw, 50vw" />
 
     <!-- Static SEO tags: social scrapers don't run JS, so these must live in the HTML -->
     <title>Michael Eddleston | Software Engineer & Web Developer</title>
     <meta name="description" content="Software Engineer specialising in React, TypeScript, and Python. Previously at ARM, now co-founder of page-flow. Building bespoke web solutions in Milton Keynes, UK." />
     <meta name="author" content="Michael Eddleston" />
     <link rel="canonical" href="https://michaeleddleston.com/" />
-    <meta name="theme-color" content="#F5F4F0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#111214" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -77,9 +77,8 @@
       (function () {
         var theme;
         try { theme = localStorage.getItem('theme'); } catch (e) {}
-        if (theme !== 'light' && theme !== 'dark') {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
+        // The design is dark-first; light is an opt-in via the toggle.
+        if (theme !== 'light' && theme !== 'dark') theme = 'dark';
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
