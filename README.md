@@ -24,6 +24,7 @@ A personal portfolio built with **React**, **Vite** and **Tailwind CSS**. Dark-f
 
 - **Pantheon case study**: real dashboard screenshot and the platform's headline numbers.
 - **Projects row**: horizontal scroll-snap tiles fed live from the projects API, with curated titles and descriptions, skeleton loading and an error state. No GitHub API calls from the browser.
+- **Project popups**: each tile opens a native `<dialog>` with the full write-up from the repo's README front matter (`details`, `languages`, `technologies`, `hostedUrl`), plus code and live-site links. Esc, the Close button or a backdrop click closes it.
 - **Light and dark themes**: dark by default; a choice made with the toggle is remembered.
 - **Accessibility**: skip link, visible focus, semantic headings and lists, WCAG AA text contrast in both themes, reduced-motion support.
 - **SEO and social previews**: static meta tags, Open Graph/Twitter cards and JSON-LD in `index.html`.
@@ -47,6 +48,8 @@ A personal portfolio built with **React**, **Vite** and **Tailwind CSS**. Dark-f
 - `src/components/Hero.jsx` - Name, intro, CTAs and the page-flow screenshot
 - `src/components/Pantheon.jsx` - Pantheon case study
 - `src/components/Projects.jsx` - Projects row (API data plus curated copy in `CURATED`)
+- `src/components/ProjectDialog.jsx` - Project popup built from each repo's README front matter
+- `src/techNames.js` - Display names for technology slugs (`xgboost` to `XGBoost`)
 - `src/components/Experience.jsx` - Experience and skills
 - `src/components/Contact.jsx` - Contact section
 - `src/components/Footer.jsx` - Footer

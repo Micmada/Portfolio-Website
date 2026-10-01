@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import ProjectDialog from './ProjectDialog.jsx';
+import { displayName } from '../techNames.js';
 
 const PROJECTS_API = 'https://i875rw8q64.execute-api.us-east-1.amazonaws.com/prod/projects';
 const GITHUB_PROFILE = 'https://github.com/Micmada';
@@ -47,7 +49,10 @@ function toTiles(apiProjects) {
         key,
         title: curated.title ?? p.title,
         desc: curated.desc ?? p.description,
-        stack: curated.stack ?? toList(p.technologies).join(', '),
+        stack: curated.stack ?? toList(p.technologies).map(displayName).join(', '),
+        details: p.details ?? '',
+        languages: toList(p.languages),
+        technologies: toList(p.technologies),
         repoUrl: p.repoUrl,
         hostedUrl: p.hostedUrl,
       };
@@ -75,6 +80,7 @@ function SkeletonTiles() {
 export default function Projects() {
   const [tiles, setTiles]   = useState([]);
   const [status, setStatus] = useState('loading'); // loading | ready | error
+  const [open, setOpen]     = useState(null);      // project shown in the dialog
 
   useEffect(() => {
     let cancelled = false;
@@ -105,24 +111,26 @@ export default function Projects() {
           <div className="tiles" aria-busy={status === 'loading'}>
             {status === 'loading' && <SkeletonTiles />}
             {tiles.map((t, i) => (
-              <article key={t.id} className={`tile ${SURFACES[i % SURFACES.length]}`}>
-                <h3 className="tile__title">
-                  <a href={t.repoUrl} target="_blank" rel="noopener noreferrer">{t.title}</a>
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <p className="tile__desc">{t.desc}</p>
-                  <p className="tile__stack">{t.stack}</p>
-                  {t.hostedUrl && (
-                    <p className="tile__links">
-                      <a href={t.hostedUrl} target="_blank" rel="noopener noreferrer">Live site</a>
-                    </p>
-                  )}
-                </div>
-              </article>
+              <button
+                key={t.id}
+                type="button"
+                className={`tile tile--button ${SURFACES[i % SURFACES.length]}`}
+                onClick={() => setOpen(t)}
+                aria-haspopup="dialog"
+              >
+                <span className="tile__title">{t.title}</span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <span className="tile__desc">{t.desc}</span>
+                  <span className="tile__stack">{t.stack}</span>
+                  <span className="tile__more">{t.hostedUrl ? 'Details and live site' : 'Details'}</span>
+                </span>
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      <ProjectDialog project={open} onClose={() => setOpen(null)} />
     </section>
   );
 }
