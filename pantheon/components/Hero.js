@@ -51,6 +51,6 @@ export default {
     label: 'Bottom Strip',
     type: 'text',
     selector: '[data-content="hero.strip"]',
-    hint: 'Small label in the strip at the bottom of the hero, e.g. "Re-site · Pantheon · ARM"',
+    hint: 'Small label in the strip at the bottom of the hero, e.g. "page-flow · Pantheon · ARM"',
   },
 };

@@ -1,9 +1,9 @@
 export default {
-  'experience.resite_description': {
-    label: 'Re-site Role Description',
+  'experience.pageflow_description': {
+    label: 'page-flow Role Description',
     type: 'text',
-    selector: '[data-content="experience.resite_description"]',
-    hint: 'Shown when the Re-site row is expanded',
+    selector: '[data-content="experience.pageflow_description"]',
+    hint: 'Shown when the page-flow row is expanded',
   },
 
   'experience.description': {

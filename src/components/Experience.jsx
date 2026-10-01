@@ -4,18 +4,21 @@ import { c } from '../content.js';
 const EXPERIENCES = [
   {
     num: '01',
-    company: 'Re-site',
+    company: 'page-flow',
     role: 'Co-Founder & Lead Developer',
     period: 'Mar 2026 – Present',
     type: 'CO-FOUNDER',
     location: 'Milton Keynes, UK',
-    descriptionKey: 'experience.resite_description',
+    descriptionKey: 'experience.pageflow_description',
     bullets: [
-      'Architected Pantheon, a proprietary backend management platform with schema-driven module architecture and per-client CNAME subdomain deployment.',
-      'Designed modular platform architecture with independently deployable routes and schema-driven client configuration.',
-      'Currently delivering first client project: full-stack React/PostgreSQL portfolio and e-commerce site.',
+      'Architected Pantheon, a multi-tenant site management platform: one sign-in where a client edits page content, manages portfolio projects, works through website enquiries, and tracks their build and invoices.',
+      'Designed a versioned HTTP module contract and built four independently deployable modules against it (account, Projects, CMS, Enquiries), each with its own repository, stack and test suite.',
+      'Moved from a per-client admin domain to a single login host, deleting a cross-origin handoff subsystem and cutting client onboarding from a DNS-and-certificate runbook to two database writes.',
+      'Built a Git-backed CMS with draft and publish branches, schema-driven forms and a multi-device preview of the client\'s real page; content stays in the client\'s own repository.',
+      'Enforced nine security invariants in code and tests, including opaque server-side sessions, server-derived tenancy, write-only secrets and audited studio-admin access.',
+      '253 automated tests and a 21-check end-to-end smoke test running on production code paths against local AWS stand-ins.',
     ],
-    technologies: ['React', 'PostgreSQL', 'Platform Architecture'],
+    technologies: ['TypeScript', 'React', 'AWS Lambda', 'DynamoDB', 'Cognito', 'AWS CDK', 'Node.js'],
   },
   {
     num: '02',

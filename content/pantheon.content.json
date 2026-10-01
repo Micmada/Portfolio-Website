@@ -8,15 +8,15 @@
   "hero.spec_experience": "14mo+ Industry",
   "hero.description": "Building scalable systems and elegant interfaces from blueprint to deployment. Specialised in Python automation, React ecosystems, and transforming complex technical requirements into production-ready solutions.",
   "hero.core_stack": "Python, TypeScript, React, Node.js, PostgreSQL, AWS, Go",
-  "hero.strip": "Re-site · Pantheon · ARM",
+  "hero.strip": "page-flow · Pantheon · ARM",
 
   "skills.languages": "Python, JavaScript, TypeScript, Go, SQL, HTML/CSS",
   "skills.frameworks": "React, React Native, Node.js, Express, Flask, Django, Tailwind CSS, Prisma ORM",
-  "skills.tools": "Git / GitHub, PostgreSQL, MongoDB, Jenkins, Gerrit, Docker, AWS, Streamlit",
+  "skills.tools": "Git / GitHub, PostgreSQL, MongoDB, DynamoDB, Jenkins, Gerrit, Docker, AWS, AWS CDK, Streamlit",
   "skills.methodologies": "RESTful API Design, OOP, Test-Driven Dev, CI/CD Pipelines, Agile / Scrum, System Architecture, Data Modeling",
   "skills.core_competency": "Full-stack development with emphasis on scalable backend systems, modern frontend frameworks, and automated deployment pipelines.",
 
-  "experience.resite_description": "Co-founded a bespoke React web agency building custom sites for clients.",
+  "experience.pageflow_description": "Co-founded page-flow (formerly Re-site), a three-person web studio in Milton Keynes building fast websites for UK small businesses that clients own outright: domain, repository and content. I lead development, including Pantheon, the closed-source platform that will let our clients manage their own sites. It is built and tested locally, with deployment next.",
   "experience.description": "Developed and automated tools for generating the ARM Architecture Reference Manual, contributing to cutting-edge software platforms that met industry standards for efficiency, performance, and test coverage. Participated in decision-making for projects of various sizes, focusing on modern technologies and software development best practices.",
 
   "projects.section_description": "A curated collection of full-stack applications, automation systems, and experimental prototypes—each demonstrating technical versatility and problem-solving.",
